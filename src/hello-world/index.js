@@ -156,8 +156,8 @@ const evalPerlinWithFBM=(x,y,z)=>{
 const shouldBeCaveAir = (x, y, z) => {
 	const sx=1, sy=1,sz=1;
 	let cV=evalPerlinWithFBM(x*sx,y*sy,z*sz);
-	cV*=0.5;cV+=0.5;
-	cV/=1.75;
+	cV+=8/15;
+	cV*=1.1;
 	const t=smoothstep(caveThreshold-leniency,caveThreshold+leniency,cV)
 	return t>0.51;
 }
