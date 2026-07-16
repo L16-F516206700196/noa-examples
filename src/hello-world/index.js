@@ -154,7 +154,7 @@ const evalPerlinWithFBM=(x,y,z)=>{
 	//three octaves for now because five is super expensive.
 }
 const shouldBeCaveAir = (x, y, z) => {
-	const sx=0.02,sy=0.02,sz=0.02;
+	const sx=1, sy=1,sz=1;
 	let cV=evalPerlinWithFBM(x*sx,y*sy,z*sz);
 	cV*=0.5;cV+=0.5;
 	cV/=1.75;
