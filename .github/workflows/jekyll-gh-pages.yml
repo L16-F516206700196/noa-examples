@@ -35,6 +35,10 @@ jobs:
         with:
           ruby-version: '3.2'
           bundler-cache: true
+      - name: Copy JS into Jekyll source
+        run: |
+          mkdir -p docs/assets/src
+          cp -R src/ docs/src/
       - name: Build with Jekyll (source in docs/)
         run: bundle exec jekyll build --source docs --destination _site
       - name: Upload artifact
