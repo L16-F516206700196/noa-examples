@@ -40,7 +40,7 @@ const dot3 = (a,b) => (a[0]*b[0])+(a[1]*b[1])+(a[2]*b[2]);
 const fade = x => 6*(x**5) - 15*(x**4) + 10*(x**3);
 const lerp = (a, b, n) => a + ((b - a)*n);
 const smoothstep=(a,b,n)=>{
-	let t = Math.max(0,Math.min(1,(x-a)/(b-a)));
+	let t = Math.max(0,Math.min(1,(n-a)/(b-a)));
 	return 6*(t**5) - 15*(t**4) + 10*(t**3);
 }
 const rgba_hex=rgba=>{
