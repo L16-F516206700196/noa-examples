@@ -174,12 +174,12 @@ const shouldBeCaveAir = (x, y, z) => {
 */
 
 // block materials (just colors for this demo)
-var brownish = [0.45, 0.36, 0.22]
-var greenish = [0.1, 0.8, 0.2]
+var brownish = [0.45, 0.36, 0.22, 0.5]
+var greenish = [0.1, 0.8, 0.2, 0.6]
 noa.registry.registerMaterial('dirt', {color:brownish});
 noa.registry.registerMaterial('grass', {color:greenish});
-noa.registry.registerMaterial('stone', {color:[0.5,0.5,0.5]}); //stone
-noa.registry.registerMaterial('bedrock', {color:[0.1,0.1,0.1],}); //stone
+noa.registry.registerMaterial('stone', {color:[0.5,0.5,0.5,0.5]}); //stone
+noa.registry.registerMaterial('bedrock', {color:[0.1,0.1,0.1],});
 //noa.registry.registerMaterial(name, color, textureURL)
 
 // block types and their material names
