@@ -69,14 +69,23 @@ const randomS=s=>{
     s^=(s<<17); 
 	return ((s>>>0)/4294967295)
 }
+//limit or cache per chunk later.
+cacheAG=new Map();
+cacheAG3=new Map();
 
 const angleGen = (x, y) => {
+	let keyCheck=`${x},${y}`;
+	if(cacheAG.has(keyCheck))return cacheAG.get(keyCheck);
 	let seedU = `${x},${y}|${seedNum}`;
 	let angle = randomS(generateHash(seedU))*Math.PI*2;
-	return [Math.cos(angle),Math.sin(angle)] //for length 1
+	let rV=[Math.cos(angle),Math.sin(angle)];
+	cacheAG.set(keyCheck,rV);
+	return rV //for length 1
 }
 
 const angleGen3 = (x, y, z) => {
+	let keyCheck=`${x},${y},${z}`;
+	if(cacheAG3.has(keyCheck))return cacheAG3.get(keyCheck);
 	let seedU = `${x},${y},${z}|${seedNum}`;
 	let r1 = randomS(generateHash(`${seedU}|a`));
 	let r2 = randomS(generateHash(`${seedU}|b`));
@@ -86,7 +95,9 @@ const angleGen3 = (x, y, z) => {
 	const phi = Math.acos(1 - 2 * r2);       // 0..pi (gives uniform-ish directions)
 
 	const sinPhi = Math.sin(phi);
-	return [Math.cos(theta) * sinPhi, Math.cos(phi), Math.sin(theta) * sinPhi];
+	let rV=[Math.cos(theta) * sinPhi, Math.cos(phi), Math.sin(theta) * sinPhi];
+	cacheAG3.set(keyCheck,rV);
+	return rV;
 }
 
 const perlin = (x, y) => {
@@ -138,14 +149,16 @@ const evalPerlinWithFBM=(x,y,z)=>{
 	return 
 	 (perlin3(k/16,l/16,m/16)*(scale/heightScale)/16)
 	+(perlin3(k/ 8,l/ 8,m/ 8)*(scale/heightScale)/8)
-	+(perlin3(k/ 4,l/ 4,m/ 4)*(scale/heightScale)/4)
-	+(perlin3(k/ 2,l/ 2,m/ 2)*(scale/heightScale)/2)
-	+(perlin3(k,   l,   m   )*(scale/heightScale));
+	//+(perlin3(k/ 4,l/ 4,m/ 4)*(scale/heightScale)/4)
+	//+(perlin3(k/ 2,l/ 2,m/ 2)*(scale/heightScale)/2)
+	//+(perlin3(k,   l,   m   )*(scale/heightScale));
+	//two octaves for now because five is super expensive.
 }
 const shouldBeCaveAir = (x, y, z) => {
 	const sx=0.02,sy=0.02,sz=0.02;
 	let cV=evalPerlinWithFBM(x*sx,y*sy,z*sz);
 	cV*=0.5;cV+=0.5;
+	cV/=1.9375;
 	const t=smoothstep(caveThreshold-leniency,caveThreshold+leniency,cV)
 	return t>0.51;
 }
@@ -202,7 +215,7 @@ function getVoxelID(x, y, z) {
 	let amount = Math.round(height);
 	if (y < -99) return 0;
 	if (y === -99) return bedrockID
-	if(shouldBeCaveAir)return 0;
+	if(shouldBeCaveAir(x,y,z))return 0;
 	if (y < amount-5)return stoneID
     if (y < amount-1) return dirtID
     
