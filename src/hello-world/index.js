@@ -70,8 +70,8 @@ const randomS=s=>{
 	return ((s>>>0)/4294967295)
 }
 //limit or cache per chunk later.
-cacheAG=new Map();
-cacheAG3=new Map();
+let cacheAG=new Map();
+let cacheAG3=new Map();
 
 const angleGen = (x, y) => {
 	let keyCheck=`${x},${y}`;
