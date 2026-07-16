@@ -29,15 +29,20 @@ var opts = {
 }
 var noa = new Engine(opts)
 
-//perlin by FWJ7 / L16_F51620
+//perlin by FWJ7 / L16_F51620, normalisation for angleGen3 by GPT 5.4 nano (idk trig lol)
 let seedNum = 0;
 let scale=16;
 let heightScale=4;
+let caveThreshold = 0.55, leniency = 0.066;
 
 const dot = (a,b) => (a[0]*b[0])+(a[1]*b[1]);
+const dot3 = (a,b) => (a[0]*b[0])+(a[1]*b[1])+(a[2]*b[2]);
 const fade = x => 6*(x**5) - 15*(x**4) + 10*(x**3);
 const lerp = (a, b, n) => a + ((b - a)*n);
-
+const smoothstep=(a,b,n)=>{
+	let t = Math.max(0,Math.min(1,(x-a)/(b-a)));
+	return 6*(t**5) - 15*(t**4) + 10*(t**3);
+}
 const rgba_hex=rgba=>{
 	let hex="#";
     for(i of rgba.map(i=>Math.floor(i))){
@@ -71,6 +76,19 @@ const angleGen = (x, y) => {
 	return [Math.cos(angle),Math.sin(angle)] //for length 1
 }
 
+const angleGen3 = (x, y, z) => {
+	let seedU = `${x},${y},${z}|${seedNum}`;
+	let r1 = randomS(generateHash(`${seedU}|a`));
+	let r2 = randomS(generateHash(`${seedU}|b`));
+
+	//ty for the normalisation chatgpt
+	const theta = r1 * Math.PI * 2;           // 0..2pi
+	const phi = Math.acos(1 - 2 * r2);       // 0..pi (gives uniform-ish directions)
+
+	const sinPhi = Math.sin(phi);
+	return [Math.cos(theta) * sinPhi, Math.cos(phi), Math.sin(theta) * sinPhi];
+}
+
 const perlin = (x, y) => {
 	
     let x_0 = Math.floor(x), x_1 = x_0+1, y_0 = Math.floor(y), y_1 = y_0+1; 
@@ -88,6 +106,50 @@ const perlin = (x, y) => {
     return value;
 }
 
+const perlin3 = (x, y, z) => {
+	
+    let x_0 = Math.floor(x), x_1 = x_0+1, y_0 = Math.floor(y), y_1 = y_0+1, z_0 = Math.floor(z), z_1 = z_0+1; 
+	const g_000=angleGen3(x_0,y_0,z_0);
+	const g_100=angleGen3(x_1,y_0,z_0);
+	const g_010=angleGen3(x_0,y_1,z_0);
+	const g_110=angleGen3(x_1,y_1,z_0);
+
+	const g_001=angleGen3(x_0,y_0,z_1);
+	const g_101=angleGen3(x_1,y_0,z_1);
+	const g_011=angleGen3(x_0,y_1,z_1);
+	const g_111=angleGen3(x_1,y_1,z_1);
+    let frx=x-x_0;
+    let fry=y-y_0;
+	let frz=z-z_0;
+    let u = fade(frx), v = fade(fry), w = fade(frz);
+    let d_000 = [frx, fry, frz], d_100 = [frx-1, fry, frz], d_010 = [frx, fry-1, frz], d_110 = [frx-1, fry-1, frz];
+	let d_001 = [frx, fry, frz-1], d_101 = [frx-1, fry, frz-1], d_011 = [frx, fry-1, frz-1], d_111 = [frx-1, fry-1, frz-1]; 
+    let s_000 = dot3(g_000,d_000), s_100 = dot3(g_100,d_100), s_010 = dot3(g_010,d_010), s_110 = dot3(g_110,d_110); 
+	let s_001 = dot3(g_001,d_001), s_101 = dot3(g_101,d_101), s_011 = dot3(g_011,d_011), s_111 = dot3(g_111,d_111); 
+    let lx0 = lerp(s_000,s_100,u), lx1 = lerp(s_010,s_110,u); 
+	let lx2 = lerp(s_001,s_101,u), lx3 = lerp(s_011,s_111,u); 
+	let ly0 = lerp(lx0,lx1,v), ly1 = lerp(lx2,lx3,v);
+    let value = lerp(ly0,ly1,w);
+    return value;
+}
+//perlin frequencies here may look off because normally you should multiply x/16,y/16 by a higher number. However, k and l, which are used, are actually x/scale and z/scale, so it's the opposite here. Sorry for the strange behaviour lol
+const evalPerlinWithFBM=(x,y,z)=>{
+	let k=x/scale,l=y/scale,m=z/scale;
+	return 
+	 (perlin3(k/16,l/16,m/16)*(scale/heightScale)/16)
+	+(perlin3(k/ 8,l/ 8,m/ 8)*(scale/heightScale)/8)
+	+(perlin3(k/ 4,l/ 4,m/ 4)*(scale/heightScale)/4)
+	+(perlin3(k/ 2,l/ 2,m/ 2)*(scale/heightScale)/2)
+	+(perlin3(k,   l,   m   )*(scale/heightScale));
+}
+const shouldBeCaveAir = (x, y, z) => {
+	const sx=0.02,sy=0.02,sz=0.02;
+	let cV=evalPerlinWithFBM(x*sx,y*sy,z*sz);
+	cV*=0.5;cV+=0.5;
+	const t=smoothstep(caveThreshold-leniency,caveThreshold+leniency,cV)
+	return t>0.51;
+}
+
 /*
  *
  *      Registering voxel types
@@ -101,10 +163,10 @@ const perlin = (x, y) => {
 // block materials (just colors for this demo)
 var brownish = [0.45, 0.36, 0.22]
 var greenish = [0.1, 0.8, 0.2]
-noa.registry.registerMaterial('dirt', brownish, null);
-noa.registry.registerMaterial('grass', greenish, null);
-noa.registry.registerMaterial('stone', [0.5,0.5,0.5], null); //stone
-noa.registry.registerMaterial('bedrock', [0.1,0.1,0.1], null); //stone
+noa.registry.registerMaterial('dirt', {color:brownish});
+noa.registry.registerMaterial('grass', {color:greenish});
+noa.registry.registerMaterial('stone', {color:[0.5,0.5,0.5]}); //stone
+noa.registry.registerMaterial('bedrock', {color:[0.1,0.1,0.1],}); //stone
 //noa.registry.registerMaterial(name, color, textureURL)
 
 // block types and their material names
@@ -140,7 +202,8 @@ function getVoxelID(x, y, z) {
 	let amount = Math.round(height);
 	if (y < -99) return 0;
 	if (y === -99) return bedrockID
-	if (y < amount-5) return stoneID
+	if(shouldBeCaveAir)return 0;
+	if (y < amount-5)return stoneID
     if (y < amount-1) return dirtID
     
     if (y < amount) return grassID
