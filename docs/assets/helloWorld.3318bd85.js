@@ -209,8 +209,8 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
     // `x, y, z` - world coords of the corner of the chunk
     for (var i = 0; i < data.shape[0]; i++) {
         for (var k = 0; k < data.shape[2]; k++) {
-			let l=x/scale;
-			let m=z/scale;
+			let l=(x+i)/scale;
+			let m=(z+k)/scale;
 			let height=(perlin(l,m)*(scale/heightScale))
 			+(perlin(l/2,m/2)*(scale/heightScale)/2)
 			+(perlin(l/4,m/4)*(scale/heightScale)/4)
