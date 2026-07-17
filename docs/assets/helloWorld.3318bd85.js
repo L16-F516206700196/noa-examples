@@ -1,11 +1,53 @@
-import{E as Engine}from"./index.2b3d1184.js";import{C as D}from"./babylon.39bd9ef3.js";var opts={debug:!0,showFPS:!0,chunkSize:32,chunkAddDistance:2.5,chunkRemoveDistance:3.5,texturePath:"textures/"},noa=new Engine(opts),e=noa;
+import{E as Engine}from"./index.2b3d1184.js";import{C as D}from"./babylon.39bd9ef3.js";
+var opts = {
+    debug: true,
+    showFPS: true,
+    chunkSize: 32,
+    chunkAddDistance: 2.5,
+    chunkRemoveDistance: 3.5,
+	playerWidth:1,
+	playerHeight:1.75,
+	texturePath:"textures/",
+    // See `test` example, or noa docs/source, for more options
+}
+var noa = new Engine(opts),e=noa;
+var permutationTable=[];
+for(let i=0;i<256;i++){permutationTable.push(i)}
+//perlin by FWJ7 / L16_F51620, normalisation for angleGen3 by GPT 5.4 nano (idk trig lol)
 let seedNum = 0;
 let scale=16;
 let heightScale=4;
-let caveThreshold = 0.77, leniency = 0.066;
+const SQRT_HALF=0.70710678118654752;
+const gradientTable=[
+	[1,0,],
+	[-1,0,],
+	[0,1],
+	[0,-1],
+	[SQRT_HALF,SQRT_HALF,],
+	[-SQRT_HALF,SQRT_HALF,],
+	[SQRT_HALF,-SQRT_HALF,],
+	[-SQRT_HALF,-SQRT_HALF,],
 
-const dot = (a,b) => (a[0]*b[0])+(a[1]*b[1]);
-const dot3 = (a,b) => (a[0]*b[0])+(a[1]*b[1])+(a[2]*b[2]);
+];
+const gradientTable3=[
+	[SQRT_HALF,SQRT_HALF,0],
+	[-SQRT_HALF,SQRT_HALF,0],
+	[SQRT_HALF,-SQRT_HALF,0],
+	[-SQRT_HALF,-SQRT_HALF,0],
+
+	[0,SQRT_HALF,SQRT_HALF,],
+	[0,-SQRT_HALF,SQRT_HALF,],
+	[0,SQRT_HALF,-SQRT_HALF,],
+	[0,-SQRT_HALF,-SQRT_HALF,],
+
+	[SQRT_HALF,0,SQRT_HALF,],
+	[SQRT_HALF,0,-SQRT_HALF,],
+	[-SQRT_HALF,0,SQRT_HALF,],
+	[-SQRT_HALF,0,-SQRT_HALF,],
+];
+let caveThreshold = 0.77, leniency = 0.066;
+const dot = (a,b0,b1) => (a[0]*b0)+(a[1]*b1);
+const dot3 = (a,b0,b1,b2) => (a[0]*b0)+(a[1]*b1)+(a[2]*b2);
 const fade = x => 6*(x**5) - 15*(x**4) + 10*(x**3);
 const lerp = (a, b, n) => a + ((b - a)*n);
 const smoothstep=(a,b,n)=>{
@@ -38,49 +80,31 @@ const randomS=s=>{
     s^=(s<<17); 
 	return ((s>>>0)/4294967295)
 }
-//limit or cache per chunk later.
-let cacheAG=new Map();
-let cacheAG3=new Map();
+
+for(let i=256;i>0;i--){
+	let j = randomS(generateHash(`${seedNum}|${i}`))*i;
+	[permutationTable[i],permutationTable[j]]=[permutationTable[j],permutationTable[i]];
+}
+
 
 const angleGen = (x, y) => {
-	let keyCheck=`${x},${y}`;
-	if(cacheAG.has(keyCheck))return cacheAG.get(keyCheck);
-	let seedU = `${x},${y}|${seedNum}`;
-	let angle = randomS(generateHash(seedU))*Math.PI*2;
-	let rV=[Math.cos(angle),Math.sin(angle)];
-	cacheAG.set(keyCheck,rV);
-	return rV //for length 1
+	let hash=generateHash(`${x},${y}|${seedNum}`);
+	return gradientTable[hash & 7];
 }
 
 const angleGen3 = (x, y, z) => {
-	let keyCheck=`${x},${y},${z}`;
-	if(cacheAG3.has(keyCheck))return cacheAG3.get(keyCheck);
-	let seedU = `${x},${y},${z}|${seedNum}`;
-	let r1 = randomS(generateHash(`${seedU}|a`));
-	let r2 = randomS(generateHash(`${seedU}|b`));
-
-	//ty for the normalisation chatgpt
-	const theta = r1 * Math.PI * 2;           // 0..2pi
-	const phi = Math.acos(1 - 2 * r2);       // 0..pi (gives uniform-ish directions)
-
-	const sinPhi = Math.sin(phi);
-	let rV=[Math.cos(theta) * sinPhi, Math.cos(phi), Math.sin(theta) * sinPhi];
-	cacheAG3.set(keyCheck,rV);
-	return rV;
+	let hash=generateHash(`${x},${y},${z}|${seedNum}`);
+	return gradientTable[hash % 12];
 }
 
 const perlin = (x, y) => {
 	
     let x_0 = Math.floor(x), x_1 = x_0+1, y_0 = Math.floor(y), y_1 = y_0+1; 
-	const g_00=angleGen(x_0,y_0);
-	const g_10=angleGen(x_1,y_0);
-	const g_01=angleGen(x_0,y_1);
-	const g_11=angleGen(x_1,y_1);
     let frx=x-x_0;
     let fry=y-y_0;
     let u = fade(frx), v = fade(fry); 
-    let d_00 = [frx, fry], d_10 = [frx-1, fry], d_01 = [frx, fry-1], d_11 = [frx-1, fry-1]; 
-    let s_00 = dot(g_00,d_00), s_10 = dot(g_10,d_10), s_01 = dot(g_01,d_01), s_11 = dot(g_11,d_11); 
+    let s_00 = dot(angleGen(x_0,y_0),frx, fry), s_10 = dot(angleGen(x_1,y_0),frx-1, fry);
+	let s_01 = dot(angleGen(x_0,y_1),frx, fry-1), s_11 = dot(angleGen(x_1,y_1),frx-1, fry-1); 
     let lx0 = lerp(s_00,s_10,u), lx1 = lerp(s_01,s_11,u); 
     let value = lerp(lx0,lx1,v);
     return value;
@@ -89,23 +113,14 @@ const perlin = (x, y) => {
 const perlin3 = (x, y, z) => {
 	
     let x_0 = Math.floor(x), x_1 = x_0+1, y_0 = Math.floor(y), y_1 = y_0+1, z_0 = Math.floor(z), z_1 = z_0+1; 
-	const g_000=angleGen3(x_0,y_0,z_0);
-	const g_100=angleGen3(x_1,y_0,z_0);
-	const g_010=angleGen3(x_0,y_1,z_0);
-	const g_110=angleGen3(x_1,y_1,z_0);
-
-	const g_001=angleGen3(x_0,y_0,z_1);
-	const g_101=angleGen3(x_1,y_0,z_1);
-	const g_011=angleGen3(x_0,y_1,z_1);
-	const g_111=angleGen3(x_1,y_1,z_1);
     let frx=x-x_0;
     let fry=y-y_0;
 	let frz=z-z_0;
     let u = fade(frx), v = fade(fry), w = fade(frz);
-    let d_000 = [frx, fry, frz], d_100 = [frx-1, fry, frz], d_010 = [frx, fry-1, frz], d_110 = [frx-1, fry-1, frz];
-	let d_001 = [frx, fry, frz-1], d_101 = [frx-1, fry, frz-1], d_011 = [frx, fry-1, frz-1], d_111 = [frx-1, fry-1, frz-1]; 
-    let s_000 = dot3(g_000,d_000), s_100 = dot3(g_100,d_100), s_010 = dot3(g_010,d_010), s_110 = dot3(g_110,d_110); 
-	let s_001 = dot3(g_001,d_001), s_101 = dot3(g_101,d_101), s_011 = dot3(g_011,d_011), s_111 = dot3(g_111,d_111); 
+    let s_000 = dot3(angleGen3(x_0,y_0,z_0),frx, fry, frz), s_100 = dot3(angleGen3(x_1,y_0,z_0),frx-1, fry, frz);
+	let s_010 = dot3(angleGen3(x_0,y_1,z_0),frx, fry-1, frz), s_110 = dot3(angleGen3(x_1,y_1,z_0),frx-1, fry-1, frz); 
+	let s_001 = dot3(angleGen3(x_0,y_0,z_1),frx, fry, frz-1), s_101 = dot3(angleGen3(x_1,y_0,z_1),frx-1, fry, frz-1);
+	let s_011 = dot3(angleGen3(x_0,y_1,z_1),frx, fry-1, frz-1), s_111 = dot3(angleGen3(x_1,y_1,z_1),frx-1, fry-1, frz-1); 
     let lx0 = lerp(s_000,s_100,u), lx1 = lerp(s_010,s_110,u); 
 	let lx2 = lerp(s_001,s_101,u), lx3 = lerp(s_011,s_111,u); 
 	let ly0 = lerp(lx0,lx1,v), ly1 = lerp(lx2,lx3,v);
@@ -119,7 +134,7 @@ const evalPerlinWithFBM=(x,y,z)=>{
 	+(perlin3(k/ 8,l/ 12,m/ 8)*(scale/heightScale)/8)
 	+(perlin3(k/ 3,l/ 4.5,m/ 3)*(scale/heightScale)/4)
 	+(perlin3(k/ 1,l/ 1.5,m/ 1)*(scale/heightScale)/8)
-	//three octaves for now because five is super expensive.
+	//four octaves for now because five is super expensive.
 }
 const shouldBeCaveAir = (x, y, z) => {
 	const sx=1,sy=1,sz=1;
@@ -133,6 +148,7 @@ const shouldBeCaveAir = (x, y, z) => {
 /*
  *
  *      Registering voxel types
+ * 
  *  Two step process. First you register a material, specifying the 
  *  color/texture/etc. of a given block face, then you register a 
  *  block, which specifies the materials for a given block type.
@@ -172,18 +188,12 @@ var bedrockID = noa.registry.registerBlock(5, {material: 'bedrock'})
 */
 
 // simple height map worldgen function
-function getVoxelID(x, y, z) {
-	let k=x/scale;
-	let l=z/scale;
-	let height=(perlin(k,l)*(scale/heightScale))
-	+(perlin(k/2,l/2)*(scale/heightScale)/2)
-	+(perlin(k/4,l/4)*(scale/heightScale)/4)
-	+(perlin(k/8,l/8)*(scale/heightScale)/8)
-	+(perlin(k/16,l/16)*(scale/heightScale)/16);
+function getVoxelID(x, y, z,height) {
+	
 	let amount = Math.round(height);
 	if (y < -256) return 0;
 	if (y === -256) return bedrockID
-	if(shouldBeCaveAir(x,y,z))return 0;
+	if(shouldBeCaveAir(x,y,z)&&y<amount)return 0;
 	if (y < amount-128)return depthstoneID
 	if (y < amount-5)return stoneID
     if (y < amount-1) return dirtID
@@ -198,9 +208,16 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
     // `data` - an `ndarray` of voxel ID data (see: https://github.com/scijs/ndarray)
     // `x, y, z` - world coords of the corner of the chunk
     for (var i = 0; i < data.shape[0]; i++) {
-        for (var j = 0; j < data.shape[1]; j++) {
-            for (var k = 0; k < data.shape[2]; k++) {
-                var voxelID = getVoxelID(x + i, y + j, z + k)
+        for (var k = 0; k < data.shape[2]; k++) {
+			let l=x/scale;
+			let m=z/scale;
+			let height=(perlin(l,m)*(scale/heightScale))
+			+(perlin(l/2,m/2)*(scale/heightScale)/2)
+			+(perlin(l/4,m/4)*(scale/heightScale)/4)
+			+(perlin(l/8,m/8)*(scale/heightScale)/8)
+			+(perlin(l/16,m/16)*(scale/heightScale)/16);
+            for (var j = 0; j < data.shape[1]; j++) {
+                var voxelID = getVoxelID(x + i, y + j, z + k,height);
                 data.set(i, j, k, voxelID)
             }
         }
@@ -210,4 +227,42 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
 });
 var g=e.playerEntity,m=e.entities.getPositionData(g),d=m.width,f=m.height,z=e.rendering.getScene(),a=D("player-mesh",{},z);var move = e.entities.getMovement(g);
 move.maxSpeed = 7.2;move.jumpImpulse=(84/11);move.moveForce = 60;move.jumpTime=0;move._jumpCount=1;
-a.scaling.x=d;a.scaling.z=d;a.scaling.y=f;a.material=e.rendering.makeStandardMaterial();e.entities.addComponent(g,e.entities.names.mesh,{mesh:a,offset:[0,f/2,0]});e.inputs.down.on("fire",function(){if(e.targetedBlock){var r=e.targetedBlock.position;e.setBlock(0,r[0],r[1],r[2])}});e.inputs.down.on("alt-fire",function(){if(e.targetedBlock){var r=e.targetedBlock.adjacent;e.setBlock(grassID,r[0],r[1],r[2])}});e.inputs.bind("alt-fire","KeyE");e.on("tick",function(r){var t=e.inputs.pointerState.scrolly;t!==0&&(e.camera.zoomDistance+=t>0?1:-1,e.camera.zoomDistance<0&&(e.camera.zoomDistance=0),e.camera.zoomDistance>10&&(e.camera.zoomDistance=10))});
+a.scaling.x=d;a.scaling.z=d;a.scaling.y=f;
+a.material=e.rendering.makeStandardMaterial();e.entities.addComponent(g,e.entities.names.mesh,{mesh:a,offset:[0,f/2,0]});
+noa.inputs.down.on('fire', function () {
+    if (noa.targetedBlock) {
+        var pos = noa.targetedBlock.position
+        noa.setBlock(0, pos[0], pos[1], pos[2])
+    }
+})
+noa.inputs.bind('fire', 'J')
+var pickedID=1;
+// place some grass on right click
+noa.inputs.down.on('mid-fire', function () {
+    if (noa.targetedBlock) {
+		pickedID=noa.targetedBlock.blockID;
+    }
+})
+noa.inputs.bind('mid-fire', 'K')
+
+noa.inputs.down.on('alt-fire', function () {
+    if (noa.targetedBlock) {
+        var pos = noa.targetedBlock.adjacent
+        noa.setBlock(pickedID, pos[0], pos[1], pos[2])
+    }
+})
+
+// add a key binding for "E" to do the same as alt-fire
+noa.inputs.bind('alt-fire', 'E')
+
+
+// each tick, consume any scroll events and use them to zoom camera
+noa.on('tick', function (dt) {
+    var scroll = noa.inputs.state.scrolly
+    if (scroll !== 0) {
+        noa.camera.zoomDistance += (scroll > 0) ? 1 : -1
+        if (noa.camera.zoomDistance < 0) noa.camera.zoomDistance = 0
+        if (noa.camera.zoomDistance > 10) noa.camera.zoomDistance = 10
+    }
+})
+ 
