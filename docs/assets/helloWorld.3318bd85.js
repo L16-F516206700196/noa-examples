@@ -148,7 +148,6 @@ const shouldBeCaveAir = (x, y, z) => {
 	tunnel*=16/11
 	return t>0.5&&tunnel>0.12;
 }
-
 /*
  *
  *      Registering voxel types
@@ -159,15 +158,13 @@ const shouldBeCaveAir = (x, y, z) => {
  * 
 */
 
-// block materials (just colors for this demo)
-var brownish = [0.45, 0.36, 0.22, 0.5]
-var greenish = [0.1, 0.8, 0.2, 0.6]
-noa.registry.registerMaterial('dirt', {color:brownish});
-noa.registry.registerMaterial('grass', {color:greenish});
-noa.registry.registerMaterial('stone', {color:[0.5,0.5,0.5,0.5]}); //stone
-noa.registry.registerMaterial('depthstone', {color:[0.3,0.3,0.3,0.5]}); //darker stone
-noa.registry.registerMaterial('bedrock', {color:[0.1,0.1,0.1],});
-//noa.registry.registerMaterial(name, color, textureURL)
+// block materials
+noa.registry.registerMaterial('dirt', {textureURL:"/dirt.png"});
+noa.registry.registerMaterial('grass', {textureURL:"/grass_block_top.png"});
+noa.registry.registerMaterial('stone', {textureURL:"/stone.png"}); //stone
+noa.registry.registerMaterial('depthstone', {textureURL:"/depthstone.png"}); //darker stone
+noa.registry.registerMaterial('bedrock', {textureURL:"/bedrock.png"});
+//noa.registry.registerMaterial(name, {textureURL?: string, color?: number[]})
 
 // block types and their material names
 var dirtID = noa.registry.registerBlock(1, {material: 'dirt'})
@@ -229,6 +226,7 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
     // tell noa the chunk's terrain data is now set
     noa.world.setChunkData(id, data)
 });
+
 var g=e.playerEntity,m=e.entities.getPositionData(g),d=m.width,f=m.height,z=e.rendering.getScene(),a=D("player-mesh",{},z);var move = e.entities.getMovement(g);
 move.maxSpeed = 7.2;move.jumpImpulse=(84/11);move.moveForce = 60;move.jumpTime=0;move._jumpCount=1;
 a.scaling.x=d;a.scaling.z=d;a.scaling.y=f;
