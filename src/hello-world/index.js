@@ -148,7 +148,8 @@ const evalPerlinWithFBM=(x,y,z)=>{
 	let k=x/scale,l=y/scale,m=z/scale;
 	return (perlin3(k/16,l/24,m/16)*(scale/heightScale)/16)
 	+(perlin3(k/ 8,l/ 12,m/ 8)*(scale/heightScale)/8)
-	+(perlin3(k/ 4,l/ 6,m/ 4)*(scale/heightScale)/4)
+	+(perlin3(k/ 3,l/ 4.5,m/ 3)*(scale/heightScale)/4)
+	+(perlin3(k/ 1,l/ 1.5,m/ 1)*(scale/heightScale)/4)
 	//three octaves for now because five is super expensive.
 }
 const shouldBeCaveAir = (x, y, z) => {
