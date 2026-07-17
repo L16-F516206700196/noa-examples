@@ -24,7 +24,7 @@ var opts = {
     chunkSize: 32,
     chunkAddDistance: 2.5,
     chunkRemoveDistance: 3.5,
-	playerWidth:1,
+	playerWidth:0.75,
 	playerHeight:1.75,
 	texturePath:"textures/",
     // See `test` example, or noa docs/source, for more options
@@ -64,7 +64,7 @@ const gradientTable3=[
 	[-SQRT_HALF,0,SQRT_HALF,],
 	[-SQRT_HALF,0,-SQRT_HALF,],
 ];
-let caveThreshold = 0.77, leniency = 0.066;
+let caveThreshold = 0.75, leniency = 0.066;
 const dot = (a,b0,b1) => (a[0]*b0)+(a[1]*b1);
 const dot3 = (a,b0,b1,b2) => (a[0]*b0)+(a[1]*b1)+(a[2]*b2);
 const fade = x => 6*(x**5) - 15*(x**4) + 10*(x**3);
