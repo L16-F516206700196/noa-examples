@@ -228,7 +228,7 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
     noa.world.setChunkData(id, data)
 });
 var g=e.playerEntity,m=e.entities.getPositionData(g),d=m.width,f=m.height,z=e.rendering.getScene(),a=D("player-mesh",{},z);var move = e.entities.getMovement(g);
-move.maxSpeed = 7.2;move.standingFriction=0.9;move.running=!0;move.runningFriction=0.9;move.jumpImpulse=(84/11);move.moveForce = 60;move.jumpTime=0;move.airJumps=1;
+move.maxSpeed = 7.2;move.running=!0;move.runningFriction=0.9;move.jumpImpulse=(84/11);move.moveForce = 60;move.jumpTime=0;move.airJumps=1;
 a.scaling.x=d;a.scaling.z=d;a.scaling.y=f;
 a.material=e.rendering.makeStandardMaterial();e.entities.addComponent(g,e.entities.names.mesh,{mesh:a,offset:[0,f/2,0]});
 noa.inputs.down.on('fire', function () {
