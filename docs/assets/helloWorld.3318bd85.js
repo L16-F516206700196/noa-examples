@@ -88,12 +88,12 @@ for(let i=256;i>0;i--){
 
 
 const angleGen = (x, y) => {
-	let hash=generateHash(`${x},${y}|${seedNum}`);
+	let hash=Math.abs(generateHash(`${x},${y}|${seedNum}`));
 	return gradientTable[hash & 7];
 }
 
 const angleGen3 = (x, y, z) => {
-	let hash=generateHash(`${x},${y},${z}|${seedNum}`);
+	let hash=Math.abs(generateHash(`${x},${y},${z}|${seedNum}`));
 	return gradientTable3[hash % 12];
 }
 
