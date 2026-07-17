@@ -21,7 +21,7 @@ import { Engine } from 'noa-engine'
 var opts = {
     debug: true,
     showFPS: true,
-    chunkSize: 32,
+    chunkSize: 16,
     chunkAddDistance: 2.5,
     chunkRemoveDistance: 3.5,
 	playerWidth:0.75,
@@ -262,7 +262,7 @@ var w = dat.width
 var h = dat.height
 var move = noa.entities.getMovement(player)
 
-move.maxSpeed = 7.2;move.jumpImpulse=(84/11);move.moveForce = 60;move.jumpTime=0;move._jumpCount=1;
+move.maxSpeed = 7.2;move.jumpImpulse=(84/11);move.moveForce = 60;move.jumpTime=0;move.airJumps=1;
 // add a mesh to represent the player, and scale it, etc.
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import '@babylonjs/core/Meshes/Builders/boxBuilder'
