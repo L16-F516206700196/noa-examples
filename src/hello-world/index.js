@@ -146,17 +146,16 @@ const perlin3 = (x, y, z) => {
 //perlin frequencies here may look off because normally you should multiply x/16,y/16 by a higher number. However, k and l, which are used, are actually x/scale and z/scale, so it's the opposite here. Sorry for the strange behaviour lol
 const evalPerlinWithFBM=(x,y,z)=>{
 	let k=x/scale,l=y/scale,m=z/scale;
-	return (perlin3(k/32,l/48,m/32)*(scale/heightScale)/8)
-	+(perlin3(k/16,l/24,m/16)*(scale/heightScale)/16)
+	return (perlin3(k/16,l/24,m/16)*(scale/heightScale)/16)
 	+(perlin3(k/ 8,l/ 12,m/ 8)*(scale/heightScale)/8)
-	+(perlin3(k/ 4,l/ 6,m/ 4)*(scale/heightScale)/4)
-	+(perlin3(k/ 2,l/ 3,m/ 2)*(scale/heightScale)/8)
+	+(perlin3(k/ 2,l/ 3,m/ 2)*(scale/heightScale)/4)
+	//three octaves for now because five is super expensive.
 }
 const shouldBeCaveAir = (x, y, z) => {
 	const sx=1,sy=1,sz=1;
 	let cV=evalPerlinWithFBM(x*sx,y*sy,z*sz);
-	cV+=9/8;
-	cV/=9/4;
+	cV+=7/8
+	cV/=7/4;
 	const t=smoothstep(caveThreshold-leniency,caveThreshold+leniency,cV)
 	return t>0.67;
 }
