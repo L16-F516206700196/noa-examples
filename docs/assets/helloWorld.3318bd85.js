@@ -45,7 +45,7 @@ const gradientTable3=[
 	[-SQRT_HALF,0,SQRT_HALF,],
 	[-SQRT_HALF,0,-SQRT_HALF,],
 ];
-let caveThreshold = 0.7, leniency = 0.066;
+let caveThreshold = 0.64, leniency = 0.066;
 const dot = (a,b0,b1) => (a[0]*b0)+(a[1]*b1);
 const dot3 = (a,b0,b1,b2) => (a[0]*b0)+(a[1]*b1)+(a[2]*b2);
 const fade = x => 6*(x**5) - 15*(x**4) + 10*(x**3);
@@ -146,7 +146,7 @@ const shouldBeCaveAir = (x, y, z) => {
 	let tunnel=perlin3(k/12,l/12,m/12)*((scale/heightScale)/8)
 	tunnel+=11/32;
 	tunnel*=16/11
-	return t>0.5&&tunnel>0.15;
+	return t>0.5&&tunnel>0.12;
 }
 
 /*
