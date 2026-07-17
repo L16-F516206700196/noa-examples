@@ -133,7 +133,6 @@ const shouldBeCaveAir = (x, y, z) => {
 /*
  *
  *      Registering voxel types
- * 
  *  Two step process. First you register a material, specifying the 
  *  color/texture/etc. of a given block face, then you register a 
  *  block, which specifies the materials for a given block type.
