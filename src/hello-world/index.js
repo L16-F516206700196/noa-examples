@@ -33,7 +33,7 @@ var noa = new Engine(opts)
 let seedNum = 0;
 let scale=16;
 let heightScale=4;
-let caveThreshold = 0.92, leniency = 0.066;
+let caveThreshold = 0.80, leniency = 0.066;
 
 const dot = (a,b) => (a[0]*b[0])+(a[1]*b[1]);
 const dot3 = (a,b) => (a[0]*b[0])+(a[1]*b[1])+(a[2]*b[2]);
@@ -146,18 +146,17 @@ const perlin3 = (x, y, z) => {
 //perlin frequencies here may look off because normally you should multiply x/16,y/16 by a higher number. However, k and l, which are used, are actually x/scale and z/scale, so it's the opposite here. Sorry for the strange behaviour lol
 const evalPerlinWithFBM=(x,y,z)=>{
 	let k=x/scale,l=y/scale,m=z/scale;
-	return (perlin3(k/8,l/4,m/8)*(scale/heightScale)/16)
-	+(perlin3(k/ 4,l/ 2,m/ 4)*(scale/heightScale)/8)
-	+(perlin3(k/ 2,l/ 1,m/ 2)*(scale/heightScale)/4)
-	//+(perlin3(k/ 2,l/ 2,m/ 2)*(scale/heightScale)/2)
-	//+(perlin3(k,   l,   m   )*(scale/heightScale));
-	//three octaves for now because five is super expensive.
+	return (perlin3(k/32,l/48,m/32)*(scale/heightScale)/8)
+	+(perlin3(k/16,l/24,m/16)*(scale/heightScale)/16)
+	+(perlin3(k/ 8,l/ 12,m/ 8)*(scale/heightScale)/8)
+	+(perlin3(k/ 4,l/ 6,m/ 4)*(scale/heightScale)/4)
+	+(perlin3(k/ 2,l/ 3,m/ 2)*(scale/heightScale)/8)
 }
 const shouldBeCaveAir = (x, y, z) => {
 	const sx=1,sy=1,sz=1;
 	let cV=evalPerlinWithFBM(x*sx,y*sy,z*sz);
-	cV+=8/15;
-	cV/=1.1;
+	cV+=11/8;
+	cV/=11/4;
 	const t=smoothstep(caveThreshold-leniency,caveThreshold+leniency,cV)
 	return t>0.8;
 }
