@@ -314,3 +314,4 @@ noa.on('tick', function (dt) {
         if (noa.camera.zoomDistance > 10) noa.camera.zoomDistance = 10
     }
 })
+ 
