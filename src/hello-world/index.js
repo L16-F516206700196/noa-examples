@@ -33,7 +33,7 @@ var noa = new Engine(opts)
 let seedNum = 0;
 let scale=16;
 let heightScale=4;
-let caveThreshold = 0.55, leniency = 0.066;
+let caveThreshold = 0.92, leniency = 0.066;
 
 const dot = (a,b) => (a[0]*b[0])+(a[1]*b[1]);
 const dot3 = (a,b) => (a[0]*b[0])+(a[1]*b[1])+(a[2]*b[2]);
@@ -154,12 +154,12 @@ const evalPerlinWithFBM=(x,y,z)=>{
 	//three octaves for now because five is super expensive.
 }
 const shouldBeCaveAir = (x, y, z) => {
-	const sx=1, sy=1,sz=1;
+	const sx=1,sy=1,sz=1;
 	let cV=evalPerlinWithFBM(x*sx,y*sy,z*sz);
 	cV+=8/15;
-	cV*=1.1;
+	cV/=1.1;
 	const t=smoothstep(caveThreshold-leniency,caveThreshold+leniency,cV)
-	return t>0.51;
+	return t>0.8;
 }
 
 /*
