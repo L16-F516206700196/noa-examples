@@ -113,7 +113,7 @@ const angleGen = (x, y) => {
 
 const angleGen3 = (x, y, z) => {
 	let hash=generateHash(`${x},${y},${z}|${seedNum}`);
-	return gradientTable[hash % 12];
+	return gradientTable3[hash % 12];
 }
 
 const perlin = (x, y) => {
