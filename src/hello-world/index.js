@@ -149,7 +149,7 @@ const evalPerlinWithFBM=(x,y,z)=>{
 	return (perlin3(k/16,l/24,m/16)*(scale/heightScale)/16)
 	+(perlin3(k/ 8,l/ 12,m/ 8)*(scale/heightScale)/8)
 	+(perlin3(k/ 3,l/ 4.5,m/ 3)*(scale/heightScale)/4)
-	+(perlin3(k/ 1,l/ 1.5,m/ 1)*(scale/heightScale)/4)
+	+(perlin3(k/ 1,l/ 1.5,m/ 1)*(scale/heightScale)/8)
 	//three octaves for now because five is super expensive.
 }
 const shouldBeCaveAir = (x, y, z) => {
@@ -177,14 +177,16 @@ var greenish = [0.1, 0.8, 0.2, 0.6]
 noa.registry.registerMaterial('dirt', {color:brownish});
 noa.registry.registerMaterial('grass', {color:greenish});
 noa.registry.registerMaterial('stone', {color:[0.5,0.5,0.5,0.5]}); //stone
+noa.registry.registerMaterial('depthstone', {color:[0.3,0.3,0.3,0.5]}); //darker stone
 noa.registry.registerMaterial('bedrock', {color:[0.1,0.1,0.1],});
 //noa.registry.registerMaterial(name, color, textureURL)
 
 // block types and their material names
-var dirtID = noa.registry.registerBlock(1, { material: 'dirt' })
-var grassID = noa.registry.registerBlock(2, { material: 'grass' })
+var dirtID = noa.registry.registerBlock(1, {material: 'dirt'})
+var grassID = noa.registry.registerBlock(2, {material: 'grass'})
 var stoneID = noa.registry.registerBlock(3, {material: 'stone'})
-var bedrockID = noa.registry.registerBlock(4, {material: 'bedrock'})
+var depthstoneID = noa.registry.registerBlock(4, {material: 'depthstone'})
+var bedrockID = noa.registry.registerBlock(5, {material: 'bedrock'})
 //noa.registry.registerMaterial(blockID, opts)
 
 
@@ -211,9 +213,10 @@ function getVoxelID(x, y, z) {
 	+(perlin(k/8,l/8)*(scale/heightScale)/8)
 	+(perlin(k/16,l/16)*(scale/heightScale)/16);
 	let amount = Math.round(height);
-	if (y < -99) return 0;
-	if (y === -99) return bedrockID
+	if (y < -256) return 0;
+	if (y === -256) return bedrockID
 	if(shouldBeCaveAir(x,y,z))return 0;
+	if (y < amount-128)return depthstoneID
 	if (y < amount-5)return stoneID
     if (y < amount-1) return dirtID
     
