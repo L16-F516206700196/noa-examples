@@ -2,7 +2,7 @@ import{E as Engine}from"./index.2b3d1184.js";import{C as D}from"./babylon.39bd9e
 var opts = {
     debug: true,
     showFPS: true,
-    chunkSize: 32,
+    chunkSize: 16,
     chunkAddDistance: 2.5,
     chunkRemoveDistance: 3.5,
 	playerWidth:0.75,
@@ -148,6 +148,7 @@ const shouldBeCaveAir = (x, y, z) => {
 	tunnel*=16/11
 	return t>0.5&&tunnel>0.12;
 }
+
 /*
  *
  *      Registering voxel types
@@ -226,9 +227,8 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
     // tell noa the chunk's terrain data is now set
     noa.world.setChunkData(id, data)
 });
-
 var g=e.playerEntity,m=e.entities.getPositionData(g),d=m.width,f=m.height,z=e.rendering.getScene(),a=D("player-mesh",{},z);var move = e.entities.getMovement(g);
-move.maxSpeed = 7.2;move.jumpImpulse=(84/11);move.moveForce = 60;move.jumpTime=0;move._jumpCount=1;
+move.maxSpeed = 7.2;move.jumpImpulse=(84/11);move.moveForce = 60;move.jumpTime=0;move.airJumps=1;
 a.scaling.x=d;a.scaling.z=d;a.scaling.y=f;
 a.material=e.rendering.makeStandardMaterial();e.entities.addComponent(g,e.entities.names.mesh,{mesh:a,offset:[0,f/2,0]});
 noa.inputs.down.on('fire', function () {
