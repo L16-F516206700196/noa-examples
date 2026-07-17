@@ -209,5 +209,5 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
     noa.world.setChunkData(id, data)
 });
 var g=e.playerEntity,m=e.entities.getPositionData(g),d=m.width,f=m.height,z=e.rendering.getScene(),a=D("player-mesh",{},z);var move = e.entities.getMovement(g);
-move.maxSpeed = 7.2;move.jumpImpulse=7.5;move.moveForce = 60;move.jumpTime=0;move._jumpCount=1;
+move.maxSpeed = 7.2;move.jumpImpulse=(84/11);move.moveForce = 60;move.jumpTime=0;move._jumpCount=1;
 a.scaling.x=d;a.scaling.z=d;a.scaling.y=f;a.material=e.rendering.makeStandardMaterial();e.entities.addComponent(g,e.entities.names.mesh,{mesh:a,offset:[0,f/2,0]});e.inputs.down.on("fire",function(){if(e.targetedBlock){var r=e.targetedBlock.position;e.setBlock(0,r[0],r[1],r[2])}});e.inputs.down.on("alt-fire",function(){if(e.targetedBlock){var r=e.targetedBlock.adjacent;e.setBlock(grassID,r[0],r[1],r[2])}});e.inputs.bind("alt-fire","KeyE");e.on("tick",function(r){var t=e.inputs.pointerState.scrolly;t!==0&&(e.camera.zoomDistance+=t>0?1:-1,e.camera.zoomDistance<0&&(e.camera.zoomDistance=0),e.camera.zoomDistance>10&&(e.camera.zoomDistance=10))});
