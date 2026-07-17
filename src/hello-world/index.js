@@ -24,10 +24,12 @@ var opts = {
     chunkSize: 32,
     chunkAddDistance: 2.5,
     chunkRemoveDistance: 3.5,
+	playerWidth:1,
+	playerHeight:1.75,
 	texturePath:"textures/",
     // See `test` example, or noa docs/source, for more options
 }
-var noa = new Engine(opts)
+var noa = new Engine(opts),e=noa;
 var permutationTable=[];
 for(let i=0;i<256;i++){permutationTable.push(i)}
 //perlin by FWJ7 / L16_F51620, normalisation for angleGen3 by GPT 5.4 nano (idk trig lol)
@@ -296,12 +298,20 @@ noa.inputs.down.on('fire', function () {
         noa.setBlock(0, pos[0], pos[1], pos[2])
     }
 })
-
+noa.inputs.bind('fire', 'J')
+var pickedID=1;
 // place some grass on right click
+noa.inputs.down.on('mid-fire', function () {
+    if (noa.targetedBlock) {
+		pickedID=noa.targetedBlock.blockID;
+    }
+})
+noa.inputs.bind('mid-fire', 'K')
+
 noa.inputs.down.on('alt-fire', function () {
     if (noa.targetedBlock) {
         var pos = noa.targetedBlock.adjacent
-        noa.setBlock(grassID, pos[0], pos[1], pos[2])
+        noa.setBlock(pickedID, pos[0], pos[1], pos[2])
     }
 })
 
