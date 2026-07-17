@@ -33,7 +33,7 @@ var noa = new Engine(opts)
 let seedNum = 0;
 let scale=16;
 let heightScale=4;
-let caveThreshold = 0.80, leniency = 0.066;
+let caveThreshold = 0.7, leniency = 0.066;
 
 const dot = (a,b) => (a[0]*b[0])+(a[1]*b[1]);
 const dot3 = (a,b) => (a[0]*b[0])+(a[1]*b[1])+(a[2]*b[2]);
