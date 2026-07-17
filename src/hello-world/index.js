@@ -255,7 +255,9 @@ var player = noa.playerEntity
 var dat = noa.entities.getPositionData(player)
 var w = dat.width
 var h = dat.height
-
+var move = noa.entities.getMovement(player)
+move.maxSpeed = 50
+move.moveForce = 60
 // add a mesh to represent the player, and scale it, etc.
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import '@babylonjs/core/Meshes/Builders/boxBuilder'
