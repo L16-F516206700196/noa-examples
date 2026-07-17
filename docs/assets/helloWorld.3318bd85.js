@@ -2,7 +2,7 @@ import{E as Engine}from"./index.2b3d1184.js";import{C as D}from"./babylon.39bd9e
 let seedNum = 0;
 let scale=16;
 let heightScale=4;
-let caveThreshold = 0.7, leniency = 0.066;
+let caveThreshold = 0.77, leniency = 0.066;
 
 const dot = (a,b) => (a[0]*b[0])+(a[1]*b[1]);
 const dot3 = (a,b) => (a[0]*b[0])+(a[1]*b[1])+(a[2]*b[2]);
