@@ -330,7 +330,7 @@ noa.inputs.bind('alt-fire', 'KeyE')
 
 noa.inputs.bind('log-coords', 'KeyC')
 noa.inputs.down.on('log-coords', function () {
-    console.log(noa.entities.getPosition(e))
+    console.log(noa.entities.getPosition(g))
 })
 // each tick, consume any scroll events and use them to zoom camera
 noa.on('tick', function (dt) {
