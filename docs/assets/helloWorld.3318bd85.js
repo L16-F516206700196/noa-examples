@@ -359,7 +359,7 @@ noa.inputs.down.on('next-block', function () {
     pickedID=Math.min(Object.keys(BLOCK_TO_ID).length,pickedID+1);
 })
 noa.inputs.bind("log-physics-body","KeyL");
-noa.inputs.down-on("log-physics-body",()=>{
+noa.inputs.down.on("log-physics-body",()=>{
 	console.log(noa.entities.getPhysics(g))
 })
 // each tick, consume any scroll events and use them to zoom camera
