@@ -182,7 +182,7 @@ const shouldBeCaveAir = (x, y, z) => {
 // block materials
 let ores={
 	//coal_ore:0.99,
-	adamantine_ore:[-160,-112,0.999754],
+	adamantine_ore:[-224,-112,0.999754],
 }
 const BLOCK_TO_ID={
 	"dirt":1,
@@ -369,7 +369,7 @@ noa.inputs.down.on('fire', function () {
         noa.setBlock(0, pos[0], pos[1], pos[2])
     }
 })
-noa.inputs.bind('fire', 'J')
+noa.inputs.bind('fire', 'KeyJ')
 var pickedID=1;
 // place some grass on right click
 noa.inputs.down.on('mid-fire', function () {
@@ -377,7 +377,7 @@ noa.inputs.down.on('mid-fire', function () {
 		pickedID=noa.targetedBlock.blockID;
     }
 })
-noa.inputs.bind('mid-fire', 'K')
+noa.inputs.bind('mid-fire', 'KeyK')
 
 noa.inputs.down.on('alt-fire', function () {
     if (noa.targetedBlock) {
@@ -387,9 +387,9 @@ noa.inputs.down.on('alt-fire', function () {
 })
 
 // add a key binding for "E" to do the same as alt-fire
-noa.inputs.bind('alt-fire', 'E')
+noa.inputs.bind('alt-fire', 'KeyE')
 
-noa.inputs.bind('log-coords', 'C')
+noa.inputs.bind('log-coords', 'KeyC')
 noa.inputs.down.on('log-coords', function () {
     console.log(noa.entities.getPosition(player))
 })
