@@ -315,7 +315,7 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
 });
 
 var g=e.playerEntity,m=e.entities.getPositionData(g),d=m.width,f=m.height,z=e.rendering.getScene(),a=D("player-mesh",{},z);var move = e.entities.getMovement(g);
-move.maxSpeed = 7.2;move.running=!0;move.airMoveMult=0.5;move.jumpImpulse=(84/11);move.moveForce = 60;move.jumpTime=0;move.airJumps=0;
+move.maxSpeed = 7.2;move.running=!0;move.airMoveMult=0;move.jumpImpulse=(84/11);move.moveForce = 60;move.jumpTime=0;move.airJumps=0;
 a.scaling.x=d;a.scaling.z=d;a.scaling.y=f;
 a.material=e.rendering.makeStandardMaterial();e.entities.addComponent(g,e.entities.names.mesh,{mesh:a,offset:[0,f/2,0]});
 
@@ -357,6 +357,10 @@ noa.inputs.down.on('previous-block', function () {
 })
 noa.inputs.down.on('next-block', function () {
     pickedID=Math.min(Object.keys(BLOCK_TO_ID).length,pickedID+1);
+})
+noa.inputs.bind("log-physics-body","KeyL");
+noa.inputs.down-on("log-physics-body",()=>{
+	console.log(noa.entities.getPhysics(g))
 })
 // each tick, consume any scroll events and use them to zoom camera
 noa.on('tick', function (dt) {
