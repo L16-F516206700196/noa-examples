@@ -162,8 +162,14 @@ const shouldBeCaveAir = (x, y, z) => {
 
 // block materials
 let ores={
-	//coal_ore:0.99,
-	adamantine_ore:[-224,-112,0.999754],
+	coal_ore:[-240,-16,4084/4096],
+	iron_ore:[-240,-32,4084/4096],
+	gold_ore:[-240,-64,4084/4096],
+	titanium_ore:[-240,-96,4088/4096],
+	sapphire_ore:[-240,-112,4090/4096],
+	diamond_ore:[-240,-128,4094/4096],
+	emerald_ore:[-272,-192,8189/8192],
+	adamantine_ore:[-384,-256,8191/8192],
 }
 const BLOCK_TO_ID={
 	"dirt":1,
@@ -174,41 +180,46 @@ const BLOCK_TO_ID={
 	"coal_ore":6,
 	"iron_ore":7,
 	"gold_ore":8,
-	"sapphire_ore":9,
-	"diamond_ore":10,
-	"ore_placeholder":11,
-	"adamantine_ore":12,
-	"depthstone_coal_ore":13,
-	"depthstone_iron_ore":14,
-	"depthstone_gold_ore":15,
+	"titanium_ore":9,
+	"sapphire_ore":10,
+	"diamond_ore":11,
+	"depthstone_coal_ore":12,
+	"depthstone_iron_ore":13,
+	"depthstone_gold_ore":14,
+	"depthstone_titanium_ore":15,
 	"depthstone_sapphire_ore":16,
 	"depthstone_diamond_ore":17,
-	"depthstone_ore_placeholder":18,
+	"depthstone_emerald_ore":18,
 	"depthstone_adamantine_ore":19,
+	"underworld_stone":20,
+	"underworld_stone_emerald_ore":21,
+	"underworld_stone_adamantine_ore":22,
 };
 noa.registry.registerMaterial('dirt', {textureURL:"/dirt.png"});
 noa.registry.registerMaterial('grass_block_top', {textureURL:"/grass_block_top.png"});
 noa.registry.registerMaterial('stone', {textureURL:"/stone.png"}); //stone
 noa.registry.registerMaterial('depthstone', {textureURL:"/depthstone.png"}); //darker stone
 noa.registry.registerMaterial('bedrock', {textureURL:"/bedrock.png"});
-/*
+
 noa.registry.registerMaterial('coal_ore', {textureURL:"/coal_ore.png"});
 noa.registry.registerMaterial('iron_ore', {textureURL:"/iron_ore.png"});
 noa.registry.registerMaterial('gold_ore', {textureURL:"/gold_ore.png"});
+noa.registry.registerMaterial('titanium_ore', {textureURL:"/titanium_ore.png"});
 noa.registry.registerMaterial('sapphire_ore', {textureURL:"/sapphire_ore.png"});
 noa.registry.registerMaterial('diamond_ore', {textureURL:"/diamond_ore.png"});
-noa.registry.registerMaterial('ore_placeholder', {textureURL:"dirt.png"});
-*/
-noa.registry.registerMaterial('adamantine_ore', {textureURL:"/adamantine_ore.png"});
-/*
+
 noa.registry.registerMaterial('depthstone_coal_ore', {textureURL:"/depthstone_coal_ore.png"});
 noa.registry.registerMaterial('depthstone_iron_ore', {textureURL:"/depthstone_iron_ore.png"});
 noa.registry.registerMaterial('depthstone_gold_ore', {textureURL:"/depthstone_gold_ore.png"});
+noa.registry.registerMaterial('depthstone_titanium_ore', {textureURL:"/depthstone_titanium_ore.png"});
 noa.registry.registerMaterial('depthstone_sapphire_ore', {textureURL:"/depthstone_sapphire_ore.png"});
 noa.registry.registerMaterial('depthstone_diamond_ore', {textureURL:"/depthstone_diamond_ore.png"});
-noa.registry.registerMaterial('depthstone_ore_placeholder', {textureURL:"dirt.png"});
-*/
+noa.registry.registerMaterial('depthstone_emerald_ore', {textureURL:"/depthstone_emerald_ore.png"});
 noa.registry.registerMaterial('depthstone_adamantine_ore', {textureURL:"/depthstone_adamantine_ore.png"});
+
+noa.registry.registerMaterial('underworld_stone', {textureURL:"/underworld_stone.png"});
+noa.registry.registerMaterial('underworld_stone_emerald_ore', {textureURL:"/underworld_stone_emerald_ore.png"});
+noa.registry.registerMaterial('underworld_stone_adamantine_ore', {textureURL:"/underworld_stone_adamantine_ore.png"});
 //noa.registry.registerMaterial(name, {textureURL?: string, color?: number[]})
 
 // block types and their material names
@@ -217,24 +228,26 @@ var grassID = noa.registry.registerBlock(2, {material: 'grass_block_top'})
 var stoneID = noa.registry.registerBlock(3, {material: 'stone'})
 var depthstoneID = noa.registry.registerBlock(4, {material: 'depthstone'})
 var bedrockID = noa.registry.registerBlock(5, {material: 'bedrock'})
-/*
+
 var coal_oreID = noa.registry.registerBlock(6, {material: 'coal_ore'})
 var iron_oreID = noa.registry.registerBlock(7, {material: 'iron_ore'})
 var gold_oreID = noa.registry.registerBlock(8, {material: 'gold_ore'})
-var sapphire_oreID = noa.registry.registerBlock(9, {material: 'sapphire_ore'})
-var diamond_oreID = noa.registry.registerBlock(10, {material: 'diamond_ore'})
-var ore_placeholderID = noa.registry.registerBlock(11, {material: 'ore_placeholder'})
-*/
-var adamantine_oreID = noa.registry.registerBlock(12, {material: 'adamantine_ore'})
-/*
-var depthstone_coal_oreID = noa.registry.registerBlock(13, {material: 'depthstone_coal_ore'})
-var depthstone_iron_oreID = noa.registry.registerBlock(14, {material: 'depthstone_iron_ore'})
-var depthstone_gold_oreID = noa.registry.registerBlock(15, {material: 'depthstone_gold_ore'})
+var titanium_oreID = noa.registry.registerBlock(9, {material: 'titanium_ore'})
+var sapphire_oreID = noa.registry.registerBlock(10, {material: 'sapphire_ore'})
+var diamond_oreID = noa.registry.registerBlock(11, {material: 'diamond_ore'})
+
+var depthstone_coal_oreID = noa.registry.registerBlock(12, {material: 'depthstone_coal_ore'})
+var depthstone_iron_oreID = noa.registry.registerBlock(13, {material: 'depthstone_iron_ore'})
+var depthstone_gold_oreID = noa.registry.registerBlock(14, {material: 'depthstone_gold_ore'})
+var depthstone_titanium_oreID = noa.registry.registerBlock(15, {material: 'depthstone_titanium_ore'})
 var depthstone_sapphire_oreID = noa.registry.registerBlock(16, {material: 'depthstone_sapphire_ore'})
 var depthstone_diamond_oreID = noa.registry.registerBlock(17, {material: 'depthstone_diamond_ore'})
-var depthstone_ore_placeholderID = noa.registry.registerBlock(18, {material: 'depthstone_ore_placeholder'})
-*/
+var depthstone_emerald_oreID = noa.registry.registerBlock(18, {material: 'depthstone_emerald_ore'})
 var depthstone_adamantine_oreID = noa.registry.registerBlock(19, {material: 'depthstone_adamantine_ore'})
+
+var underworld_stoneID = noa.registry.registerBlock(20, {material: 'underworld_stone'})
+var underworld_stone_emerald_oreID = noa.registry.registerBlock(21, {material: 'underworld_stone_emerald_ore'})
+var underworld_stone_adamantine_oreID = noa.registry.registerBlock(22, {material: 'underworld_stone_adamantine_ore'})
 
 
 //noa.registry.registerMaterial(blockID, opts)
@@ -256,15 +269,19 @@ var depthstone_adamantine_oreID = noa.registry.registerBlock(19, {material: 'dep
 // simple height map worldgen function
 function getVoxelID(x, y, z,height) {
 	let amount = Math.round(height);
-	if (y < -256) return 0;
-	if (y === -256) return bedrockID;
+	if (y < -384) return 0;
+	if (y === -384) return bedrockID;
 	if(shouldBeCaveAir(x,y,z)&&y<amount)return 0;
 	for(let I of Object.keys(ores)){
 		let J = ores[I]; // [min, max, chancePerBlock]
 		if(randomS(generateHash(`${x},${y},${z}|${seedNum}|${I}`))>=J[2]&&(y>=J[0]&&y<=J[1])){
-			return y<(-128 + ((randomS(generateHash(`${x},${y},${z}|${seedNum}|depthstone`)) * 4) - 2) )?BLOCK_TO_ID[`depthstone_${I}`]:BLOCK_TO_ID[I];
+			return y<
+			(-256 + ((randomS(generateHash(`${x},${y},${z}|${seedNum}|underworld_stone`)) * 6) - 3) )?BLOCK_TO_ID[`underworld_stone_${I}`]:
+			(-128 + ((randomS(generateHash(`${x},${y},${z}|${seedNum}|depthstone`)) * 4) - 2) )?BLOCK_TO_ID[`depthstone_${I}`]:
+			BLOCK_TO_ID[I];
 		};
 	}
+	if (y < -256 + ((randomS(generateHash(`${x},${y},${z}|${seedNum}|underworld_stone`)) * 6) - 3))return underworld_stoneID
 	if (y < -128 + ((randomS(generateHash(`${x},${y},${z}|${seedNum}|depthstone`)) * 4) - 2))return depthstoneID
 	if (y < amount-5)return stoneID
     if (y < amount-1) return dirtID
@@ -298,7 +315,7 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
 });
 
 var g=e.playerEntity,m=e.entities.getPositionData(g),d=m.width,f=m.height,z=e.rendering.getScene(),a=D("player-mesh",{},z);var move = e.entities.getMovement(g);
-move.maxSpeed = 7.2;move.running=!0;move.standingFriction=0.99;move.jumpImpulse=(84/11);move.moveForce = 60;move.jumpTime=0;move.airJumps=0;
+move.maxSpeed = 7.2;move.running=!0;move.airMoveMult=0.5;move.jumpImpulse=(84/11);move.moveForce = 60;move.jumpTime=0;move.airJumps=0;
 a.scaling.x=d;a.scaling.z=d;a.scaling.y=f;
 a.material=e.rendering.makeStandardMaterial();e.entities.addComponent(g,e.entities.names.mesh,{mesh:a,offset:[0,f/2,0]});
 
@@ -331,6 +348,15 @@ noa.inputs.bind('alt-fire', 'KeyE')
 noa.inputs.bind('log-coords', 'KeyC')
 noa.inputs.down.on('log-coords', function () {
     console.log(noa.entities.getPosition(g))
+})
+
+noa.inputs.bind("previous-block","KeyU");
+noa.inputs.bind("next-block","KeyO");
+noa.inputs.down.on('previous-block', function () {
+    pickedID=Math.max(1,pickedID-1)
+})
+noa.inputs.down.on('next-block', function () {
+    pickedID=Math.min(Object.keys(BLOCK_TO_ID).length,pickedID+1);
 })
 // each tick, consume any scroll events and use them to zoom camera
 noa.on('tick', function (dt) {
