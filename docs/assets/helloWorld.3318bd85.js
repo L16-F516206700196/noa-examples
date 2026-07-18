@@ -18,6 +18,7 @@ let seedNum = 0;
 let scale=16;
 let heightScale=4;
 const SQRT_HALF=0.70710678118654752;
+
 const gradientTable=[
 	[1,0,],
 	[-1,0,],
@@ -29,6 +30,7 @@ const gradientTable=[
 	[-SQRT_HALF,-SQRT_HALF,],
 
 ];
+
 const gradientTable3=[
 	[SQRT_HALF,SQRT_HALF,0],
 	[-SQRT_HALF,SQRT_HALF,0],
@@ -82,7 +84,7 @@ const randomS=s=>{
 }
 
 for(let i=256;i>0;i--){
-	let j = randomS(generateHash(`${seedNum}|${i}`))*i;
+	let j = Math.floor(randomS(generateHash(`${seedNum}|${i}`))*i);
 	[permutationTable[i],permutationTable[j]]=[permutationTable[j],permutationTable[i]];
 }
 
@@ -133,8 +135,7 @@ const evalPerlinWithFBM=(x,y,z)=>{
 	return (perlin3(k/16,l/24,m/16)*(scale/heightScale)/16)
 	+(perlin3(k/ 8,l/ 12,m/ 8)*(scale/heightScale)/8)
 	+(perlin3(k/ 3,l/ 4.5,m/ 3)*(scale/heightScale)/4)
-	+(perlin3(k/ 1,l/ 1.5,m/ 1)*(scale/heightScale)/8)
-	//four octaves for now because five is super expensive.
+	+(perlin3(k/ 1,l/ 1.5,m/ 1)*(scale/heightScale)/8);
 }
 const shouldBeCaveAir = (x, y, z) => {
 	const sx=1,sy=1,sz=1;
@@ -160,19 +161,82 @@ const shouldBeCaveAir = (x, y, z) => {
 */
 
 // block materials
+let ores={
+	//coal_ore:0.99,
+	adamantine_ore:[-160,-112,0.999754],
+}
+const BLOCK_TO_ID={
+	"dirt":1,
+	"grass_block_top":2,
+	"stone":3,
+	"depthstone":4,
+	"bedrock":5,
+	"coal_ore":6,
+	"iron_ore":7,
+	"gold_ore":8,
+	"sapphire_ore":9,
+	"diamond_ore":10,
+	"ore_placeholder":11,
+	"adamantine_ore":12,
+	"depthstone_coal_ore":13,
+	"depthstone_iron_ore":14,
+	"depthstone_gold_ore":15,
+	"depthstone_sapphire_ore":16,
+	"depthstone_diamond_ore":17,
+	"depthstone_ore_placeholder":18,
+	"depthstone_adamantine_ore":19,
+};
 noa.registry.registerMaterial('dirt', {textureURL:"/dirt.png"});
-noa.registry.registerMaterial('grass', {textureURL:"/grass_block_top.png"});
+noa.registry.registerMaterial('grass_block_top', {textureURL:"/grass_block_top.png"});
 noa.registry.registerMaterial('stone', {textureURL:"/stone.png"}); //stone
 noa.registry.registerMaterial('depthstone', {textureURL:"/depthstone.png"}); //darker stone
 noa.registry.registerMaterial('bedrock', {textureURL:"/bedrock.png"});
+/*
+noa.registry.registerMaterial('coal_ore', {textureURL:"/coal_ore.png"});
+noa.registry.registerMaterial('iron_ore', {textureURL:"/iron_ore.png"});
+noa.registry.registerMaterial('gold_ore', {textureURL:"/gold_ore.png"});
+noa.registry.registerMaterial('sapphire_ore', {textureURL:"/sapphire_ore.png"});
+noa.registry.registerMaterial('diamond_ore', {textureURL:"/diamond_ore.png"});
+noa.registry.registerMaterial('ore_placeholder', {textureURL:"dirt.png"});
+*/
+noa.registry.registerMaterial('adamantine_ore', {textureURL:"/adamantine_ore.png"});
+/*
+noa.registry.registerMaterial('depthstone_coal_ore', {textureURL:"/depthstone_coal_ore.png"});
+noa.registry.registerMaterial('depthstone_iron_ore', {textureURL:"/depthstone_iron_ore.png"});
+noa.registry.registerMaterial('depthstone_gold_ore', {textureURL:"/depthstone_gold_ore.png"});
+noa.registry.registerMaterial('depthstone_sapphire_ore', {textureURL:"/depthstone_sapphire_ore.png"});
+noa.registry.registerMaterial('depthstone_diamond_ore', {textureURL:"/depthstone_diamond_ore.png"});
+noa.registry.registerMaterial('depthstone_ore_placeholder', {textureURL:"dirt.png"});
+*/
+noa.registry.registerMaterial('depthstone_adamantine_ore', {textureURL:"/depthstone_adamantine_ore.png"});
 //noa.registry.registerMaterial(name, {textureURL?: string, color?: number[]})
 
 // block types and their material names
 var dirtID = noa.registry.registerBlock(1, {material: 'dirt'})
-var grassID = noa.registry.registerBlock(2, {material: 'grass'})
+var grassID = noa.registry.registerBlock(2, {material: 'grass_block_top'})
 var stoneID = noa.registry.registerBlock(3, {material: 'stone'})
 var depthstoneID = noa.registry.registerBlock(4, {material: 'depthstone'})
 var bedrockID = noa.registry.registerBlock(5, {material: 'bedrock'})
+/*
+var coal_oreID = noa.registry.registerBlock(6, {material: 'coal_ore'})
+var iron_oreID = noa.registry.registerBlock(7, {material: 'iron_ore'})
+var gold_oreID = noa.registry.registerBlock(8, {material: 'gold_ore'})
+var sapphire_oreID = noa.registry.registerBlock(9, {material: 'sapphire_ore'})
+var diamond_oreID = noa.registry.registerBlock(10, {material: 'diamond_ore'})
+var ore_placeholderID = noa.registry.registerBlock(11, {material: 'ore_placeholder'})
+*/
+var adamantine_oreID = noa.registry.registerBlock(12, {material: 'adamantine_ore'})
+/*
+var depthstone_coal_oreID = noa.registry.registerBlock(13, {material: 'depthstone_coal_ore'})
+var depthstone_iron_oreID = noa.registry.registerBlock(14, {material: 'depthstone_iron_ore'})
+var depthstone_gold_oreID = noa.registry.registerBlock(15, {material: 'depthstone_gold_ore'})
+var depthstone_sapphire_oreID = noa.registry.registerBlock(16, {material: 'depthstone_sapphire_ore'})
+var depthstone_diamond_oreID = noa.registry.registerBlock(17, {material: 'depthstone_diamond_ore'})
+var depthstone_ore_placeholderID = noa.registry.registerBlock(18, {material: 'depthstone_ore_placeholder'})
+*/
+var depthstone_adamantine_oreID = noa.registry.registerBlock(19, {material: 'depthstone_adamantine_ore'})
+
+
 //noa.registry.registerMaterial(blockID, opts)
 
 
@@ -191,12 +255,17 @@ var bedrockID = noa.registry.registerBlock(5, {material: 'bedrock'})
 
 // simple height map worldgen function
 function getVoxelID(x, y, z,height) {
-	
 	let amount = Math.round(height);
 	if (y < -256) return 0;
-	if (y === -256) return bedrockID
+	if (y === -256) return bedrockID;
 	if(shouldBeCaveAir(x,y,z)&&y<amount)return 0;
-	if (y < amount-128)return depthstoneID
+	for(let I of Object.keys(ores)){
+		let J = ores[I]; // [min, max, chancePerBlock]
+		if(randomS(generateHash(`${x},${y},${z}|${seedNum}|${I}`))>=J[2]&&(y>=J[0]&&y<=J[1])){
+			return y<(-128 + ((randomS(generateHash(`${x},${y},${z}|${seedNum}|depthstone`)) * 4) - 2) )?BLOCK_TO_ID[`depthstone_${I}`]:BLOCK_TO_ID[I];
+		};
+	}
+	if (y < -128 + ((randomS(generateHash(`${x},${y},${z}|${seedNum}|depthstone`)) * 4) - 2))return depthstoneID
 	if (y < amount-5)return stoneID
     if (y < amount-1) return dirtID
     
@@ -227,10 +296,12 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
     // tell noa the chunk's terrain data is now set
     noa.world.setChunkData(id, data)
 });
+
 var g=e.playerEntity,m=e.entities.getPositionData(g),d=m.width,f=m.height,z=e.rendering.getScene(),a=D("player-mesh",{},z);var move = e.entities.getMovement(g);
-move.maxSpeed = 7.2;move.running=!0;move.standingFriction=0.9;move.jumpImpulse=(84/11);move.moveForce = 60;move.jumpTime=0;move.airJumps=1;
+move.maxSpeed = 7.2;move.running=!0;move.standingFriction=0.99;move.jumpImpulse=(84/11);move.moveForce = 60;move.jumpTime=0;move.airJumps=0;
 a.scaling.x=d;a.scaling.z=d;a.scaling.y=f;
 a.material=e.rendering.makeStandardMaterial();e.entities.addComponent(g,e.entities.names.mesh,{mesh:a,offset:[0,f/2,0]});
+
 noa.inputs.down.on('fire', function () {
     if (noa.targetedBlock) {
         var pos = noa.targetedBlock.position
