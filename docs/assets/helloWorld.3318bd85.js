@@ -9,7 +9,7 @@ var opts = {
 	playerHeight:1.8,
 	texturePath:"textures/",
     // See `test` example, or noa docs/source, for more options
-};
+}
 var noa = new Engine(opts),e=noa;
 var permutationTable=[];
 for(let i=0;i<256;i++){permutationTable.push(i)}
@@ -297,9 +297,9 @@ var coal_genID = noa.registry.registerBlock(23, {
 		for(let I=0;I<genAmt;I++){
 			let r1=(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}x`))%5,
 				r2=(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}z`))%5;
-			if(isStone.includes(noa.getBlock(x+r1,y,z+r2)))noa.setBlock(x+r1,y,z+r2,oreS)
+			if(isStone.includes(noa.getBlock(x+r1,y,z+r2)))noa.setBlock(oreS,x+r1,y,z+r2)
 		}
-		noa.setBlock(x,y,z,oreS);
+		noa.setBlock(oreS,x,y,z);
 	}
 });
 /*
