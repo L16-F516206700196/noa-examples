@@ -180,6 +180,11 @@ let isOre=[
 	"underworld_stone_emerald_ore",
 	"underworld_stone_adamantine_ore",
 ]
+let isStone=[
+	"stone",
+	"depthstone",
+	"underworld_stone",
+]
 let ores={
 	coal_ore:[-240,-16,5,12],
 	iron_ore:[-240,-32,4.5,9],
@@ -306,7 +311,7 @@ function getVoxelID(x, y, z,height) {
 	}
 	if (y < -256 + (generateHash(`${x},${y},${z}|${seedNum}|underworld_stone`)%3))return underworld_stoneID
 	if (y < -128 + (generateHash(`${x},${y},${z}|${seedNum}|depthstone`)%3))return depthstoneID
-	if (y < amount-5)return stoneID
+	if (y < amount-5) return stoneID
     if (y < amount-1) return dirtID
     
     if (y < amount) return grassID
@@ -336,7 +341,7 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
 					for(let I=0;I<ores[originalOreN][3];I++){
 						let r1=Math.abs(generateHash(`${x},${y},${z}|${seedNum}|${voxelName}|${I}x`))%5,
 							r2=Math.abs(generateHash(`${x},${y},${z}|${seedNum}|${voxelName}|${I}z`))%5;
-						data.set(i-r1,j,i-r2,voxelID);
+						if(isStone.includes(noa.getBlock(i-r1,j,k-r2)))data.set(i-r1,j,k-r2,voxelID);
 					}
 				}
             }
