@@ -9,7 +9,7 @@ var opts = {
 	playerHeight:1.8,
 	texturePath:"textures/",
     // See `test` example, or noa docs/source, for more options
-}
+};
 var noa = new Engine(opts),e=noa;
 var permutationTable=[];
 for(let i=0;i<256;i++){permutationTable.push(i)}
