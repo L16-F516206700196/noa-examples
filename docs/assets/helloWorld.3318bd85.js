@@ -162,28 +162,27 @@ const shouldBeCaveAir = (x, y, z) => {
 
 // block materials
 let isOre=[
-	"coal_ore",
-	"iron_ore",
-	"gold_ore",
-	"titanium_ore",
-	"sapphire_ore",
-	"diamond_ore",
-	"depthstone_coal_ore",
-	"depthstone_iron_ore",
-	"depthstone_gold_ore",
-	"depthstone_titanium_ore",
-	"depthstone_sapphire_ore",
-	"depthstone_diamond_ore",
-	"depthstone_emerald_ore",
-	"depthstone_adamantine_ore",
-	"underworld_stone",
-	"underworld_stone_emerald_ore",
-	"underworld_stone_adamantine_ore",
+	6,
+	7,
+	8,
+	9,
+	10,
+	11,
+	12,
+	13,
+	14,
+	15,
+	16,
+	17,
+	18,
+	19,
+	21,
+	22
 ]
 let isStone=[
-	"stone",
-	"depthstone",
-	"underworld_stone",
+	3,
+	4,
+	20,
 ]
 let ores={
 	coal_ore:[-240,-16,5,12],
@@ -334,10 +333,8 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
 			+(perlin(l/16,m/16)*(scale/heightScale)/16);
             for (var j = 0; j < data.shape[1]; j++) {
                 var voxelID = getVoxelID(x + i, y + j, z + k,height);
-				let voxelName=ID_TO_BLOCK[voxelID];
-				let originalOreN=voxelName.replaceAll(/depthstone_/g,"").replaceAll(/underworld_stone_/g,"");
 				data.set(i, j, k, voxelID)
-				if(isOre.includes(voxelName)){
+				if(isOre.includes(voxelID)){
 					for(let I=0;I<ores[originalOreN][3];I++){
 						let r1=Math.abs(generateHash(`${x},${y},${z}|${seedNum}|${voxelName}|${I}x`))%5,
 							r2=Math.abs(generateHash(`${x},${y},${z}|${seedNum}|${voxelName}|${I}z`))%5;
@@ -366,6 +363,7 @@ noa.inputs.down.on('fire', function () {
 })
 noa.inputs.bind('fire', 'KeyJ')
 var pickedID=1;
+var toggleCheck=!0;
 // place some grass on right click
 noa.inputs.down.on('mid-fire', function () {
     if (noa.targetedBlock) {
@@ -377,7 +375,7 @@ noa.inputs.bind('mid-fire', 'KeyK')
 noa.inputs.down.on('alt-fire', function () {
     if (noa.targetedBlock) {
         var pos = noa.targetedBlock.adjacent
-        noa.setBlock(pickedID, pos[0], pos[1], pos[2])
+        noa[toggleCheck?"addBlock":"setBlock"](pickedID, pos[0], pos[1], pos[2])
     }
 })
 
@@ -400,6 +398,10 @@ noa.inputs.down.on('next-block', function () {
 noa.inputs.bind("log-physics-body","KeyL");
 noa.inputs.down.on("log-physics-body",()=>{
 	console.log(noa.entities.getPhysicsBody(g).friction)
+})
+noa.inputs.bind("toggle-check-place","KeyQ");
+noa.inputs.down.on("toggle-check-place",()=>{
+	toggleCheck=!toggleCheck;
 })
 // each tick, consume any scroll events and use them to zoom camera
 noa.on('tick', function (dt) {
