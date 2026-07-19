@@ -275,9 +275,8 @@ function getVoxelID(x, y, z,height) {
 	for(let I of Object.keys(ores)){
 		let J = ores[I]; // [min, max, chancePerBlock]
 		if(randomS(generateHash(`${x},${y},${z}|${seedNum}|${I}`))>=J[2]&&(y>=J[0]&&y<=J[1])){
-			return y<
-			(-256 + ((randomS(generateHash(`${x},${y},${z}|${seedNum}|underworld_stone`)) * 6) - 3) )?BLOCK_TO_ID[`underworld_stone_${I}`]:
-			(-128 + ((randomS(generateHash(`${x},${y},${z}|${seedNum}|depthstone`)) * 4) - 2) )?BLOCK_TO_ID[`depthstone_${I}`]:
+			return y<(-256 + ((randomS(generateHash(`${x},${y},${z}|${seedNum}|underworld_stone`)) * 6) - 3) )?BLOCK_TO_ID[`underworld_stone_${I}`]:
+			y<(-128 + ((randomS(generateHash(`${x},${y},${z}|${seedNum}|depthstone`)) * 4) - 2) )?BLOCK_TO_ID[`depthstone_${I}`]:
 			BLOCK_TO_ID[I];
 		};
 	}
@@ -316,6 +315,7 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
 
 var g=e.playerEntity,m=e.entities.getPositionData(g),d=m.width,f=m.height,z=e.rendering.getScene(),a=D("player-mesh",{},z);var move = e.entities.getMovement(g);
 move.maxSpeed = 7.2;move.running=!0;move.airMoveMult=0;move.jumpImpulse=(84/11);move.moveForce = 60;move.jumpTime=0;move.airJumps=0;
+noa.entities.getPhysicsBody(g).airDrag=0.8;
 a.scaling.x=d;a.scaling.z=d;a.scaling.y=f;
 a.material=e.rendering.makeStandardMaterial();e.entities.addComponent(g,e.entities.names.mesh,{mesh:a,offset:[0,f/2,0]});
 
