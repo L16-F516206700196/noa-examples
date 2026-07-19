@@ -161,27 +161,27 @@ const shouldBeCaveAir = (x, y, z) => {
 */
 
 const setBlockRect=(x1,y1,z1,x2,y2,z2,b)=>{
-	let X=Math.max(x2,x1)-Math.min(x2,x1),
-		Y=Math.max(y2,y1)-Math.min(y2,y1),
-		Z=Math.max(z2,z1)-Math.min(z2,z1);
+	let X=1+(Math.max(x2,x1)-Math.min(x2,x1)),
+		Y=1+(Math.max(y2,y1)-Math.min(y2,y1)),
+		Z=1+(Math.max(z2,z1)-Math.min(z2,z1));
 	for(let I=0;I<X;I++){
 		for(let J=0;J<Y;J++){
 			for(let K=0;K<Z;K++){
-				noa.setBlock(b,x1+X,y1+Y,z1+Z);
+				noa.setBlock(b,x1+I,y1+J,z1+K);
 			}
 		}
 	}
 };
 
 const setBlockRectR=(x1,y1,z1,x2,y2,z2,c,b1,b2)=>{
-	let X=Math.max(x2,x1)-Math.min(x2,x1),
-		Y=Math.max(y2,y1)-Math.min(y2,y1),
-		Z=Math.max(z2,z1)-Math.min(z2,z1);
+	let X=1+(Math.max(x2,x1)-Math.min(x2,x1)),
+		Y=1+(Math.max(y2,y1)-Math.min(y2,y1)),
+		Z=1+(Math.max(z2,z1)-Math.min(z2,z1));
 	for(let I=0;I<X;I++){
 		for(let J=0;J<Y;J++){
 			for(let K=0;K<Z;K++){
 				let rn=0.5+(generateHash(`${x1},${y1},${z1},${x2},${y2},${z2}|${seedNum}`)/4294967295);
-				noa.setBlock(rn<c?b1:b2,x1+X,y1+Y,z1+Z);
+				noa.setBlock(rn<c?b1:b2,x1+I,y1+J,z1+K);
 			}
 		}
 	}
