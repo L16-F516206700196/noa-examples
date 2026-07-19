@@ -72,6 +72,7 @@ const generateHash=str=>{
         hash^=(str[i].charCodeAt());
         hash = Math.imul(hash,16777619);
     }
+    
     return hash;
 }
 
@@ -298,7 +299,7 @@ var coal_genID = noa.registry.registerBlock(23, {
 				r2=(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}z`))%5;
 			if(isStone.includes(noa.getBlock(x+r1,y,z+r2)))noa.setBlock(x+r1,y,z+r2,oreS)
 		}
-		noa.setBlock(x+r1,y,z+r2,oreS);
+		noa.setBlock(x,y,z,oreS);
 	}
 });
 /*
