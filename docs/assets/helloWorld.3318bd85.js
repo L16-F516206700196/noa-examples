@@ -336,7 +336,6 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
 				let voxelName=ID_TO_BLOCK[voxelID];
 				let originalOreN=voxelName.replaceAll(/depthstone_/g,"").replaceAll(/underworld_stone_/g,"");
 				data.set(i, j, k, voxelID);
-				console.log(voxelID,isOre,isOre.includes(voxelID));
 				if(isOre.includes(voxelID)){
 					for(let I=0;I<ores[originalOreN][3];I++){
 						let r1=Math.abs(generateHash(`${x},${y},${z}|${seedNum}|${voxelName}|${I}x`))%5,
@@ -388,7 +387,8 @@ noa.inputs.bind('alt-fire', 'KeyE')
 
 noa.inputs.bind('log-coords', 'KeyC')
 noa.inputs.down.on('log-coords', function () {
-    console.log(noa.entities.getPosition(g))
+    console.log(noa.entities.getPosition(g));
+	console.log(7,isOre,isOre.includes(7));
 })
 
 noa.inputs.bind("previous-block","KeyU");
