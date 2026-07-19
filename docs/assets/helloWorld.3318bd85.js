@@ -219,6 +219,7 @@ const BLOCK_TO_ID={
 	"underworld_stone":20,
 	"underworld_stone_emerald_ore":21,
 	"underworld_stone_adamantine_ore":22,
+	"coal_gen":23,
 };
 const Blocks=Object.keys(BLOCK_TO_ID),BIds=Object.values(BLOCK_TO_ID);
 let ID_TO_BLOCK=[
@@ -439,4 +440,3 @@ noa.on('tick', function (dt) {
         if (noa.camera.zoomDistance > 10) noa.camera.zoomDistance = 10
     }
 })
- 
