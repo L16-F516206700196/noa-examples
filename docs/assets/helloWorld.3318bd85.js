@@ -72,7 +72,6 @@ const generateHash=str=>{
         hash^=(str[i].charCodeAt());
         hash = Math.imul(hash,16777619);
     }
-    
     return hash;
 }
 
