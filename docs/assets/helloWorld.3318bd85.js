@@ -314,8 +314,8 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
 });
 
 var g=e.playerEntity,m=e.entities.getPositionData(g),d=m.width,f=m.height,z=e.rendering.getScene(),a=D("player-mesh",{},z);var move = e.entities.getMovement(g);
-move.maxSpeed = 7.2;move.running=!0;move.jumpImpulse=(84/11);move.moveForce = 60;move.jumpTime=0;move.airJumps=0;
-noa.entities.getPhysicsBody(g).airDrag=-1;
+move.maxSpeed = 7.2;move.running=!0;move.jumpImpulse=8;move.moveForce = 60;move.jumpTime=0;move.airJumps=0;
+noa.entities.getPhysicsBody(g).airDrag=0.5;
 noa.entities.getPhysicsBody(g).friction=60;
 noa.entities.getPhysicsBody(g).airFriction=0.5;
 a.scaling.x=d;a.scaling.z=d;a.scaling.y=f;
