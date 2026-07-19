@@ -58,7 +58,7 @@ const smoothstep=(a,b,n)=>{
 }
 const rgba_hex=rgba=>{
 	let hex="#";
-    for(i of rgba.map(i=>Math.floor(i))){
+    for(let i of rgba.map(h=>Math.floor(h))){
     	let checkedV=i.toString(16);
         if(checkedV.length<2)checkedV=`0${checkedV}`;
         hex=`${hex}${checkedV}`;
@@ -160,7 +160,32 @@ const shouldBeCaveAir = (x, y, z) => {
  * 
 */
 
-const setBlockRect=()
+const setBlockRect=(x1,y1,z1,x2,y2,z2,b)=>{
+	let X=Math.max(x2,x1)-Math.min(x2,x1),
+		Y=Math.max(y2,y1)-Math.min(y2,y1),
+		Z=Math.max(z2,z1)-Math.min(z2,z1);
+	for(let I=0;I<X;I++){
+		for(let J=0;J<Y;J++){
+			for(let K=0;K<Z;K++){
+				noa.setBlock(b,x1+X,y1+Y,z1+Z);
+			}
+		}
+	}
+};
+
+const setBlockRectR=(x1,y1,z1,x2,y2,z2,c,b1,b2)=>{
+	let X=Math.max(x2,x1)-Math.min(x2,x1),
+		Y=Math.max(y2,y1)-Math.min(y2,y1),
+		Z=Math.max(z2,z1)-Math.min(z2,z1);
+	for(let I=0;I<X;I++){
+		for(let J=0;J<Y;J++){
+			for(let K=0;K<Z;K++){
+				let rn=0.5+(generateHash(`${x1},${y1},${z1},${x2},${y2},${z2}|${seedNum}`)/4294967295);
+				noa.setBlock(rn<c?b1:b2,x1+X,y1+Y,z1+Z);
+			}
+		}
+	}
+};
 
 // block materials
 
@@ -241,24 +266,27 @@ let ID_TO_BLOCK=[
 ]
 
 const genFunc=(x,y,z,oreS,genName)=>{
-	let oreS=6,oreN=ID_TO_BLOCK[oreS];
+	let oreN=ID_TO_BLOCK[oreS];
 	let genAmt=gens[genName][3];
 	for(let I=0;I<genAmt;I++){
 		let r1=(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}x`))%5,
 			r2=(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}z`))%5;
-		if(isStone.includes(noa.getBlock(x+r1,y,z+r2)))noa.setBlock(oreS,x+r1,y,z+r2)
+		if(isStone.includes(noa.getBlock(x+r1,y,z+r2)))noa.setBlock(oreS,x+r1,y,z+r2);
 	}
 	noa.setBlock(oreS,x,y,z);	
 }
 // l=Logs,f=Foliage,r=fRuit
 const treeGen=[
 	(x,y,z,l,f,r)=>{
-		//length = 4-6
-		
-		for(let i=0; i<4+(Math.abs(generateHash(`${x},${y},${z}|${seedNum}|oak_sapling`))%3);i++){
-			noa.setBlock(l,x,y+i,z);
-		}
-
+		//length = 6-8
+		let logHeight = 6+(Math.abs(generateHash(`${x},${y},${z}|${seedNum}|oak_sapling`))%3);
+		setBlockRectR(x-3,y+(logHeight-2),z-2,x+3,y+(logHeight+2),z+2,0.05,r,f);
+		setBlockRectR(x-2,y+(logHeight-3),z-2,x+2,y+(logHeight+3),z+2,0.05,r,f);
+		setBlockRectR(x-2,y+(logHeight-1),z-3,x+2,y+(logHeight+1),z-3,0.05,r,f);
+		setBlockRectR(x-1,y+(logHeight-2),z-3,x+1,y+(logHeight+2),z-3,0.05,r,f);
+		setBlockRectR(x-2,y+(logHeight-1),z+3,x+2,y+(logHeight+1),z+3,0.05,r,f);
+		setBlockRectR(x-1,y+(logHeight-2),z+3,x+1,y+(logHeight+2),z+3,0.05,r,f);
+		setBlockRect(x,y,z,x,y+(logHeight-1),z,l);
 	}
 ]
 
@@ -428,10 +456,10 @@ var oak_saplingID = noa.registry.registerBlock(32, {
 var oak_sapling_auto_genID = noa.registry.registerBlock(33, {
 	material: 'oak_sapling_auto_gen',
 	onSet: (x,y,z)=>{
-		return
+		return treeGen[0](x,y,z,1,2,3)
 	},
 	onLoad: (x,y,z)=>{
-		return
+		return treeGen[0](x,y,z,1,2,3)
 	},
 });
 
@@ -475,7 +503,7 @@ function getVoxelID(x, y, z,height) {
     
     if (y < amount) return grassID
 	if (y >= amount && y < -6) return waterID;
-	if(y<amount+1&&(generateHash(`${x},${y},${z}|${seedNum}|oak_sapling`)&15)>14)return oak_sapling_auto_genID;
+	if(y<amount+1&&(generateHash(`${x},${y},${z}|${seedNum}|oak_sapling`)&63)>62)return oak_sapling_auto_genID;
 	
     return 0 // signifying empty space
 }
