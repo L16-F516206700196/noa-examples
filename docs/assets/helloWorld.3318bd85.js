@@ -5,7 +5,7 @@ var opts = {
     chunkSize: 16,
     chunkAddDistance: 5,
     chunkRemoveDistance: 7,
-	playerWidth:0.75,
+	playerWidth:0.5,
 	playerHeight:1.75,
 	texturePath:"textures/",
     // See `test` example, or noa docs/source, for more options
@@ -360,7 +360,7 @@ noa.inputs.down.on('next-block', function () {
 })
 noa.inputs.bind("log-physics-body","KeyL");
 noa.inputs.down.on("log-physics-body",()=>{
-	console.log(noa.entities.getPhysics(g))
+	console.log(noa.entities.getPhysics(g).airDrag)
 })
 // each tick, consume any scroll events and use them to zoom camera
 noa.on('tick', function (dt) {
