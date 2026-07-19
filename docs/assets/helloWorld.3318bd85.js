@@ -180,7 +180,7 @@ const setBlockRectR=(x1,y1,z1,x2,y2,z2,c,b1,b2)=>{
 	for(let I=0;I<X;I++){
 		for(let J=0;J<Y;J++){
 			for(let K=0;K<Z;K++){
-				let rn=0.5+(generateHash(`${x1},${y1},${z1},${x2},${y2},${z2}|${seedNum}`)/4294967295);
+				let rn=0.5+(generateHash(`${x1+I},${y1+J},${z1+K}|${seedNum}`)/4294967295);
 				noa.setBlock(rn<c?b1:b2,x1+I,y1+J,z1+K);
 			}
 		}
@@ -502,7 +502,7 @@ function getVoxelID(x, y, z,height) {
     if (y < amount-1) return dirtID
     
     if (y < amount) return grassID
-	if (y >= amount && y < -6) return waterID;
+	if (y >= amount && y < -3) return waterID;
 	if(y<amount+1&&(generateHash(`${x},${y},${z}|${seedNum}|oak_sapling`)&63)>62)return oak_sapling_auto_genID;
 	
     return 0 // signifying empty space
@@ -521,7 +521,7 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
 			+(perlin(l/2,m/2)*(scale/heightScale)/2)
 			+(perlin(l/4,m/4)*(scale/heightScale)/4)
 			+(perlin(l/8,m/8)*(scale/heightScale)/8)
-			+(perlin(l/16,m/16)*(scale/heightScale)/16);
+			+(perlin(l/16,m/16)*(scale/heightScale)/4);
             for (var j = 0; j < data.shape[1]; j++) {
                 var voxelID = getVoxelID(x + i, y + j, z + k,height);
 				data.set(i, j, k, voxelID);
