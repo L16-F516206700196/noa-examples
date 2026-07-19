@@ -160,7 +160,10 @@ const shouldBeCaveAir = (x, y, z) => {
  * 
 */
 
+const setBlockRect=()
+
 // block materials
+
 let isOre=[
 	6,
 	7,
@@ -220,12 +223,51 @@ const BLOCK_TO_ID={
 	"underworld_stone_emerald_ore":21,
 	"underworld_stone_adamantine_ore":22,
 	"coal_gen":23,
+	"iron_gen":24,
+	"gold_gen":25,
+	"titanium_gen":26,
+	"sapphire_gen":27,
+	"diamond_gen":28,
+	"emerald_gen":29,
+	"adamantine_gen":30,
+	"water":31,
+	"oak_sapling":32,
+	"oak_sapling_auto_gen":33
 };
 const Blocks=Object.keys(BLOCK_TO_ID),BIds=Object.values(BLOCK_TO_ID);
 let ID_TO_BLOCK=[
 	"air",
 	...Blocks
 ]
+
+const genFunc=(x,y,z,oreS,genName)=>{
+	let oreS=6,oreN=ID_TO_BLOCK[oreS];
+	let genAmt=gens[genName][3];
+	for(let I=0;I<genAmt;I++){
+		let r1=(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}x`))%5,
+			r2=(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}z`))%5;
+		if(isStone.includes(noa.getBlock(x+r1,y,z+r2)))noa.setBlock(oreS,x+r1,y,z+r2)
+	}
+	noa.setBlock(oreS,x,y,z);	
+}
+// l=Logs,f=Foliage,r=fRuit
+const treeGen=[
+	(x,y,z,l,f,r)=>{
+		//length = 4-6
+		
+		for(let i=0; i<4+(Math.abs(generateHash(`${x},${y},${z}|${seedNum}|oak_sapling`))%3);i++){
+			noa.setBlock(l,x,y+i,z);
+		}
+
+	}
+]
+
+const checkStoneT=(x,y,z,r3,r2,r1)=>{
+	return y<(-256 + (generateHash(`${x},${y},${z}|${seedNum}|underworld_stone`)%3) )?r3:
+	y<(-128 + (generateHash(`${x},${y},${z}|${seedNum}|depthstone`)%3) )?r2:
+	r1;
+}
+
 noa.registry.registerMaterial('dirt', {textureURL:"/dirt.png"});
 noa.registry.registerMaterial('grass_block_top', {textureURL:"/grass_block_top.png"});
 noa.registry.registerMaterial('stone', {textureURL:"/stone.png"}); //stone
@@ -258,8 +300,10 @@ noa.registry.registerMaterial('gold_gen', {textureURL:"/gold_ore.png"});
 noa.registry.registerMaterial('titanium_gen', {textureURL:"/titanium_ore.png"});
 noa.registry.registerMaterial('sapphire_gen', {textureURL:"/sapphire_ore.png"});
 noa.registry.registerMaterial('diamond_gen', {textureURL:"/diamond_ore.png"});
-noa.registry.registerMaterial('emerald_gen', {textureURL:"/sapphire_ore.png"});
-noa.registry.registerMaterial('adamantine_gen', {textureURL:"/diamond_ore.png"});
+noa.registry.registerMaterial('emerald_gen', {textureURL:"/depthstone_emerald_ore.png"});
+noa.registry.registerMaterial('adamantine_gen', {textureURL:"/depthstone_adamantine_ore.png"});
+
+noa.registry.registerMaterial('water', {color:[0.5,0.75,1,0.5]});
 //noa.registry.registerMaterial(name, {textureURL?: string, color?: number[]})
 
 // block types and their material names
@@ -289,28 +333,109 @@ var underworld_stoneID = noa.registry.registerBlock(20, {material: 'underworld_s
 var underworld_stone_emerald_oreID = noa.registry.registerBlock(21, {material: 'underworld_stone_emerald_ore'})
 var underworld_stone_adamantine_oreID = noa.registry.registerBlock(22, {material: 'underworld_stone_adamantine_ore'})
 
+
 var coal_genID = noa.registry.registerBlock(23, {
 	material: 'coal_gen',
 	onSet: (x,y,z)=>{
-		let oreS=6,oreN=ID_TO_BLOCK[oreS];
-		let genAmt=gens["coal_gen"][3];
-		for(let I=0;I<genAmt;I++){
-			let r1=(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}x`))%5,
-				r2=(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}z`))%5;
-			if(isStone.includes(noa.getBlock(x+r1,y,z+r2)))noa.setBlock(oreS,x+r1,y,z+r2)
-		}
-		noa.setBlock(oreS,x,y,z);
-	}
+		return genFunc(x,y,z,checkStoneT(x,y,z,20,12,6),"coal_gen");
+	},
+	onLoad: (x,y,z)=>{
+		return genFunc(x,y,z,checkStoneT(x,y,z,20,12,6),"coal_gen");
+	},
 });
-/*
-var iron_genID = noa.registry.registerBlock(24, {material: 'iron_gen'})
-var gold_genID = noa.registry.registerBlock(25, {material: 'gold_gen'})
-var titanium_genID = noa.registry.registerBlock(26, {material: 'titanium_gen'})
-var sapphire_genID = noa.registry.registerBlock(27, {material: 'sapphire_gen'})
-var diamond_genID = noa.registry.registerBlock(28, {material: 'diamond_gen'})
-var emerald_genID = noa.registry.registerBlock(29, {material: 'sapphire_gen'})
-var adamantine_genID = noa.registry.registerBlock(30, {material: 'diamond_gen'})
-*/
+
+var iron_genID = noa.registry.registerBlock(24, {
+	material: 'iron_gen',
+	onSet: (x,y,z)=>{
+		return genFunc(x,y,z,checkStoneT(x,y,z,20,13,7),"iron_gen");
+	},
+	onLoad: (x,y,z)=>{
+		return genFunc(x,y,z,checkStoneT(x,y,z,20,13,7),"iron_gen");
+	},
+});
+
+var gold_genID = noa.registry.registerBlock(25, {
+	material: 'gold_gen',
+	onSet: (x,y,z)=>{
+		return genFunc(x,y,z,checkStoneT(x,y,z,20,14,8),"gold_gen");
+	},
+	onLoad: (x,y,z)=>{
+		return genFunc(x,y,z,checkStoneT(x,y,z,20,14,8),"gold_gen");
+	},
+});
+
+var titanium_genID = noa.registry.registerBlock(26, {
+	material: 'titanium_gen',
+	onSet: (x,y,z)=>{
+		return genFunc(x,y,z,checkStoneT(x,y,z,20,15,9),"titanium_gen");
+	},
+	onLoad: (x,y,z)=>{
+		return genFunc(x,y,z,checkStoneT(x,y,z,20,15,9),"titanium_gen");
+	},
+});
+
+var sapphire_genID = noa.registry.registerBlock(27, {
+	material: 'sapphire_gen',
+	onSet: (x,y,z)=>{
+		return genFunc(x,y,z,checkStoneT(x,y,z,20,16,10),"sapphire_gen");
+	},
+	onLoad: (x,y,z)=>{
+		return genFunc(x,y,z,checkStoneT(x,y,z,20,16,10),"sapphire_gen");
+	},
+});
+
+var diamond_genID = noa.registry.registerBlock(28, {
+	material: 'diamond_gen',
+	onSet: (x,y,z)=>{
+		return genFunc(x,y,z,checkStoneT(x,y,z,20,17,11),"diamond_gen");
+	},
+	onLoad: (x,y,z)=>{
+		return genFunc(x,y,z,checkStoneT(x,y,z,20,17,11),"diamond_gen");
+	},
+});
+
+var emerald_genID = noa.registry.registerBlock(29, {
+	material: 'emerald_gen',
+	onSet: (x,y,z)=>{
+		return genFunc(x,y,z,checkStoneT(x,y,z,21,18,3),"emerald_gen");
+	},
+	onLoad: (x,y,z)=>{
+		return genFunc(x,y,z,checkStoneT(x,y,z,21,18,3),"emerald_gen");
+	},
+});
+
+var adamantine_genID = noa.registry.registerBlock(30, {
+	material: 'adamantine_gen',
+	onSet: (x,y,z)=>{
+		return genFunc(x,y,z,checkStoneT(x,y,z,22,19,3),"adamantine_gen");
+	},
+	onLoad: (x,y,z)=>{
+		return genFunc(x,y,z,checkStoneT(x,y,z,22,19,3),"adamantine_gen");
+	},
+});
+
+var waterID=noa.registry.registerBlock(31,{material:"water",fluid:!0,fluidDensity:0.4});
+var oak_saplingID = noa.registry.registerBlock(32, {
+	material: 'oak_sapling',
+	onSet: (x,y,z)=>{
+		return
+	},
+	onLoad: (x,y,z)=>{
+		return
+	},
+});
+
+var oak_sapling_auto_genID = noa.registry.registerBlock(33, {
+	material: 'oak_sapling_auto_gen',
+	onSet: (x,y,z)=>{
+		return
+	},
+	onLoad: (x,y,z)=>{
+		return
+	},
+});
+
+
 
 //noa.registry.registerMaterial(blockID, opts)
 
@@ -349,6 +474,9 @@ function getVoxelID(x, y, z,height) {
     if (y < amount-1) return dirtID
     
     if (y < amount) return grassID
+	if (y >= amount && y < -6) return waterID;
+	if(y<amount+1&&(generateHash(`${x},${y},${z}|${seedNum}|oak_sapling`)&15)>14)return oak_sapling_auto_genID;
+	
     return 0 // signifying empty space
 }
 
