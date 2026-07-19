@@ -360,7 +360,7 @@ noa.inputs.down.on('next-block', function () {
 })
 noa.inputs.bind("log-physics-body","KeyL");
 noa.inputs.down.on("log-physics-body",()=>{
-	console.log(noa.entities.getPhysicsBody(g).airDrag)
+	console.log(noa.entities.getPhysicsBody(g).friction)
 })
 // each tick, consume any scroll events and use them to zoom camera
 noa.on('tick', function (dt) {
