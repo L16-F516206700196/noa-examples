@@ -291,7 +291,7 @@ var underworld_stone_adamantine_oreID = noa.registry.registerBlock(22, {material
 
 var coal_genID = noa.registry.registerBlock(23, {
 	material: 'coal_gen',
-	onLoad: (x,y,z)=>{
+	onSet: (x,y,z)=>{
 		let oreS=6,oreN=ID_TO_BLOCK[oreS];
 		let genAmt=gens["coal_gen"][3];
 		for(let I=0;I<genAmt;I++){
