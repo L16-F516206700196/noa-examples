@@ -335,7 +335,8 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
                 var voxelID = getVoxelID(x + i, y + j, z + k,height);
 				let voxelName=ID_TO_BLOCK[voxelID];
 				let originalOreN=voxelName.replaceAll(/depthstone_/g,"").replaceAll(/underworld_stone_/g,"");
-				data.set(i, j, k, voxelID)
+				data.set(i, j, k, voxelID);
+				console.log(voxelID,isOre,isOre.includes(voxelID));
 				if(isOre.includes(voxelID)){
 					for(let I=0;I<ores[originalOreN][3];I++){
 						let r1=Math.abs(generateHash(`${x},${y},${z}|${seedNum}|${voxelName}|${I}x`))%5,
