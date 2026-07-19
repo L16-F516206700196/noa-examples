@@ -6,7 +6,7 @@ var opts = {
     chunkAddDistance: 5,
     chunkRemoveDistance: 7,
 	playerWidth:0.5,
-	playerHeight:1.75,
+	playerHeight:1.8,
 	texturePath:"textures/",
     // See `test` example, or noa docs/source, for more options
 }
@@ -184,8 +184,9 @@ let isStone=[
 	4,
 	20,
 ]
-let ores={
-	coal_ore:[-240,-16,5,12],
+let gens={
+	coal_gen:[-240,-16,5,12],
+	/*
 	iron_ore:[-240,-32,4.5,9],
 	gold_ore:[-240,-64,4,6],
 	titanium_ore:[-240,-96,3,5],
@@ -193,6 +194,7 @@ let ores={
 	diamond_ore:[-240,-128,2,4],
 	emerald_ore:[-272,-192,1.5,3],
 	adamantine_ore:[-384,-256,1,2],
+	*/
 }
 const BLOCK_TO_ID={
 	"dirt":1,
@@ -248,6 +250,15 @@ noa.registry.registerMaterial('depthstone_adamantine_ore', {textureURL:"/depthst
 noa.registry.registerMaterial('underworld_stone', {textureURL:"/underworld_stone.png"});
 noa.registry.registerMaterial('underworld_stone_emerald_ore', {textureURL:"/underworld_stone_emerald_ore.png"});
 noa.registry.registerMaterial('underworld_stone_adamantine_ore', {textureURL:"/underworld_stone_adamantine_ore.png"});
+
+noa.registry.registerMaterial('coal_gen', {textureURL:"/coal_ore.png"});
+noa.registry.registerMaterial('iron_gen', {textureURL:"/iron_ore.png"});
+noa.registry.registerMaterial('gold_gen', {textureURL:"/gold_ore.png"});
+noa.registry.registerMaterial('titanium_gen', {textureURL:"/titanium_ore.png"});
+noa.registry.registerMaterial('sapphire_gen', {textureURL:"/sapphire_ore.png"});
+noa.registry.registerMaterial('diamond_gen', {textureURL:"/diamond_ore.png"});
+noa.registry.registerMaterial('emerald_gen', {textureURL:"/sapphire_ore.png"});
+noa.registry.registerMaterial('adamantine_gen', {textureURL:"/diamond_ore.png"});
 //noa.registry.registerMaterial(name, {textureURL?: string, color?: number[]})
 
 // block types and their material names
@@ -277,6 +288,28 @@ var underworld_stoneID = noa.registry.registerBlock(20, {material: 'underworld_s
 var underworld_stone_emerald_oreID = noa.registry.registerBlock(21, {material: 'underworld_stone_emerald_ore'})
 var underworld_stone_adamantine_oreID = noa.registry.registerBlock(22, {material: 'underworld_stone_adamantine_ore'})
 
+var coal_genID = noa.registry.registerBlock(23, {
+	material: 'coal_gen',
+	onLoad: (x,y,z)=>{
+		let oreS=6,oreN=ID_TO_BLOCK[oreS];
+		let genAmt=ores[oreN][3];
+		for(let I=0;I<genAmt;I++){
+			let r1=(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}x`))%5,
+				r2=(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}z`))%5;
+			if(isStone.includes(noa.getBlock(x+r1,y,z+r2)))noa.setBlock(x+r1,y,z+r2,oreS)
+		}
+		noa.setBlock(x+r1,y,z+r2,oreS);
+	}
+});
+/*
+var iron_genID = noa.registry.registerBlock(24, {material: 'iron_gen'})
+var gold_genID = noa.registry.registerBlock(25, {material: 'gold_gen'})
+var titanium_genID = noa.registry.registerBlock(26, {material: 'titanium_gen'})
+var sapphire_genID = noa.registry.registerBlock(27, {material: 'sapphire_gen'})
+var diamond_genID = noa.registry.registerBlock(28, {material: 'diamond_gen'})
+var emerald_genID = noa.registry.registerBlock(29, {material: 'sapphire_gen'})
+var adamantine_genID = noa.registry.registerBlock(30, {material: 'diamond_gen'})
+*/
 
 //noa.registry.registerMaterial(blockID, opts)
 
@@ -300,12 +333,13 @@ function getVoxelID(x, y, z,height) {
 	if (y < -384) return 0;
 	if (y === -384) return bedrockID;
 	if(shouldBeCaveAir(x,y,z)&&y<amount)return 0;
-	for(let I of Object.keys(ores)){
-		let J = ores[I]; // [min, max, chancePerBlock]
+	for(let I of Object.keys(gens)){
+		let J = gens[I]; // [min, max, chancePerBlock]
 		if(Math.abs(generateHash(`${x},${y},${z}|${seedNum}|${I}`))%16384<=J[2]*4&&(y>=J[0]&&y<=J[1])){
-			return y<(-256 + (generateHash(`${x},${y},${z}|${seedNum}|underworld_stone`)%3) )?BLOCK_TO_ID[`underworld_stone_${I}`]:
+			/*return y<(-256 + (generateHash(`${x},${y},${z}|${seedNum}|underworld_stone`)%3) )?BLOCK_TO_ID[`underworld_stone_${I}`]:
 			y<(-128 + (generateHash(`${x},${y},${z}|${seedNum}|depthstone`)%3) )?BLOCK_TO_ID[`depthstone_${I}`]:
-			BLOCK_TO_ID[I];
+			BLOCK_TO_ID[I];*/
+			return BLOCK_TO_ID[I];
 		};
 	}
 	if (y < -256 + (generateHash(`${x},${y},${z}|${seedNum}|underworld_stone`)%3))return underworld_stoneID
@@ -333,16 +367,7 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
 			+(perlin(l/16,m/16)*(scale/heightScale)/16);
             for (var j = 0; j < data.shape[1]; j++) {
                 var voxelID = getVoxelID(x + i, y + j, z + k,height);
-				let voxelName=ID_TO_BLOCK[voxelID];
-				let originalOreN=voxelName.replaceAll(/depthstone_/g,"").replaceAll(/underworld_stone_/g,"");
 				data.set(i, j, k, voxelID);
-				if(isOre.includes(voxelID)){
-					for(let I=0;I<ores[originalOreN][3];I++){
-						let r1=Math.abs(generateHash(`${x},${y},${z}|${seedNum}|${voxelName}|${I}x`))%5,
-							r2=Math.abs(generateHash(`${x},${y},${z}|${seedNum}|${voxelName}|${I}z`))%5;
-						if(isStone.includes(noa.getBlock(i-r1,j,k-r2))||noa.getBlock(i-r1,j,k-r2)===0)data.set(i-r1,j,k-r2,voxelID);
-					}
-				}
             }
         }
     }
