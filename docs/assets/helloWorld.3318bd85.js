@@ -215,10 +215,10 @@ const BLOCK_TO_ID={
 	"underworld_stone_adamantine_ore":22,
 };
 const Blocks=Object.keys(BLOCK_TO_ID),BIds=Object.values(BLOCK_TO_ID);
-const ID_TO_BLOCK={};
-for(let II=0;II<BIds.length;II++){
-	ID_TO_BLOCK[BIds[II]]=Blocks[II];
-}
+let ID_TO_BLOCK=[
+	"air",
+	...Blocks
+]
 noa.registry.registerMaterial('dirt', {textureURL:"/dirt.png"});
 noa.registry.registerMaterial('grass_block_top', {textureURL:"/grass_block_top.png"});
 noa.registry.registerMaterial('stone', {textureURL:"/stone.png"}); //stone
