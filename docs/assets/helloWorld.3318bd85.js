@@ -333,6 +333,8 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
 			+(perlin(l/16,m/16)*(scale/heightScale)/16);
             for (var j = 0; j < data.shape[1]; j++) {
                 var voxelID = getVoxelID(x + i, y + j, z + k,height);
+				let voxelName=ID_TO_BLOCK[voxelID];
+				let originalOreN=voxelName.replaceAll(/depthstone_/g,"").replaceAll(/underworld_stone_/g,"");
 				data.set(i, j, k, voxelID)
 				if(isOre.includes(voxelID)){
 					for(let I=0;I<ores[originalOreN][3];I++){
