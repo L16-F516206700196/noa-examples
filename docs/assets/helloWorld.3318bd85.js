@@ -293,7 +293,7 @@ var coal_genID = noa.registry.registerBlock(23, {
 	material: 'coal_gen',
 	onLoad: (x,y,z)=>{
 		let oreS=6,oreN=ID_TO_BLOCK[oreS];
-		let genAmt=ores[oreN][3];
+		let genAmt=gens["coal_gen"][3];
 		for(let I=0;I<genAmt;I++){
 			let r1=(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}x`))%5,
 				r2=(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}z`))%5;
