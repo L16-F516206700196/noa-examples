@@ -503,7 +503,7 @@ function getVoxelID(x, y, z,height) {
     
     if (y < amount) return grassID
 	if (y >= amount && y < -3) return waterID;
-	if(y<amount+1&&(generateHash(`${x},${y},${z}|${seedNum}|oak_sapling`)&63)>62)return oak_sapling_auto_genID;
+	if(y<amount+1&&(generateHash(`${x},${y},${z}|${seedNum}|oak_sapling`)&4095)>4094)return oak_sapling_auto_genID;
 	
     return 0 // signifying empty space
 }
