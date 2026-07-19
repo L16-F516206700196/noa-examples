@@ -24,7 +24,7 @@ var opts = {
     chunkSize: 16,
     chunkAddDistance: 5,
     chunkRemoveDistance: 7,
-	playerWidth:0.75,
+	playerWidth:0.5,
 	playerHeight:1.75,
 	texturePath:"textures/",
     // See `test` example, or noa docs/source, for more options
@@ -181,14 +181,14 @@ const shouldBeCaveAir = (x, y, z) => {
 
 // block materials
 let ores={
-	coal_ore:[-240,-16,4084/4096],
-	iron_ore:[-240,-32,4084/4096],
-	gold_ore:[-240,-64,4084/4096],
-	titanium_ore:[-240,-96,4088/4096],
-	sapphire_ore:[-240,-112,4090/4096],
-	diamond_ore:[-240,-128,4094/4096],
-	emerald_ore:[-272,-192,8189/8192],
-	adamantine_ore:[-384,-256,8191/8192],
+	coal_ore:[-240,-16,5],
+	iron_ore:[-240,-32,4.5],
+	gold_ore:[-240,-64,4],
+	titanium_ore:[-240,-96,3],
+	sapphire_ore:[-240,-112,3],
+	diamond_ore:[-240,-128,2],
+	emerald_ore:[-272,-192,1.5],
+	adamantine_ore:[-384,-256,1],
 }
 const BLOCK_TO_ID={
 	"dirt":1,
@@ -293,15 +293,14 @@ function getVoxelID(x, y, z,height) {
 	if(shouldBeCaveAir(x,y,z)&&y<amount)return 0;
 	for(let I of Object.keys(ores)){
 		let J = ores[I]; // [min, max, chancePerBlock]
-		if(randomS(generateHash(`${x},${y},${z}|${seedNum}|${I}`))>=J[2]&&(y>=J[0]&&y<=J[1])){
-			return y<
-			(-256 + ((randomS(generateHash(`${x},${y},${z}|${seedNum}|underworld_stone`)) * 6) - 3) )?BLOCK_TO_ID[`underworld_stone_${I}`]:
-			(-128 + ((randomS(generateHash(`${x},${y},${z}|${seedNum}|depthstone`)) * 4) - 2) )?BLOCK_TO_ID[`depthstone_${I}`]:
+		if(Math.abs(generateHash(`${x},${y},${z}|${seedNum}|${I}`))%16384<=J[2]*4&&(y>=J[0]&&y<=J[1])){
+			return y<(-256 + (generateHash(`${x},${y},${z}|${seedNum}|underworld_stone`)%3) )?BLOCK_TO_ID[`underworld_stone_${I}`]:
+			y<(-128 + (generateHash(`${x},${y},${z}|${seedNum}|depthstone`)%3) )?BLOCK_TO_ID[`depthstone_${I}`]:
 			BLOCK_TO_ID[I];
 		};
 	}
-	if (y < -256 + ((randomS(generateHash(`${x},${y},${z}|${seedNum}|underworld_stone`)) * 6) - 3))return underworld_stoneID
-	if (y < -128 + ((randomS(generateHash(`${x},${y},${z}|${seedNum}|depthstone`)) * 4) - 2))return depthstoneID
+	if (y < -256 + (generateHash(`${x},${y},${z}|${seedNum}|underworld_stone`)%3))return underworld_stoneID
+	if (y < -128 + (generateHash(`${x},${y},${z}|${seedNum}|depthstone`)%3))return depthstoneID
 	if (y < amount-5)return stoneID
     if (y < amount-1) return dirtID
     
@@ -349,7 +348,9 @@ var w = dat.width
 var h = dat.height
 var move = noa.entities.getMovement(player)
 
-move.maxSpeed = 7.2;move.running=!0;move.airMoveMult=0.5;move.jumpImpulse=(84/11);move.moveForce = 60;move.jumpTime=0;move.airJumps=0;
+move.maxSpeed = 7.2;move.running=!0;move.jumpImpulse=(84/11);move.moveForce = 60;move.jumpTime=0;move.airJumps=0;
+noa.entities.getPhysicsBody(g).airDrag=0.1;
+noa.entities.getPhysicsBody(g).friction=60;
 // add a mesh to represent the player, and scale it, etc.
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -418,6 +419,10 @@ noa.inputs.down.on('previous-block', function () {
 })
 noa.inputs.down.on('next-block', function () {
     pickedID=Math.min(Object.keys(BLOCK_TO_ID).length,pickedID+1);
+})
+noa.inputs.bind("log-physics-body","KeyL");
+noa.inputs.down.on("log-physics-body",()=>{
+	console.log(noa.entities.getPhysics(player))
 })
 // each tick, consume any scroll events and use them to zoom camera
 noa.on('tick', function (dt) {
