@@ -8,6 +8,7 @@ var opts = {
 	playerWidth:0.5,
 	playerHeight:1.8,
 	texturePath:"textures/",
+	blockTestDistance:6,
     // See `test` example, or noa docs/source, for more options
 }
 var noa = new Engine(opts),e=noa;
@@ -324,7 +325,7 @@ const checkStoneT=(x,y,z,r3,r2,r1)=>{
 	r1;
 }
 
-noa.registry.registerMaterial('dirt', {textureURL:"/dirst.png"});
+noa.registry.registerMaterial('dirt', {textureURL:"/dirt.png"});
 noa.registry.registerMaterial('grass_block_top', {textureURL:"/grass_block_top.png"});
 noa.registry.registerMaterial('stone', {textureURL:"/stone.png"}); //stone
 noa.registry.registerMaterial('depthstone', {textureURL:"/depthstone.png"}); //darker stone
@@ -350,14 +351,14 @@ noa.registry.registerMaterial('underworld_stone', {textureURL:"/underworld_stone
 noa.registry.registerMaterial('underworld_stone_emerald_ore', {textureURL:"/underworld_stone_emerald_ore.png"});
 noa.registry.registerMaterial('underworld_stone_adamantine_ore', {textureURL:"/underworld_stone_adamantine_ore.png"});
 
-noa.registry.registerMaterial('coal_gen', {textureURL:"/dirt.png"});
-noa.registry.registerMaterial('iron_gen', {textureURL:"/dirt.png"});
-noa.registry.registerMaterial('gold_gen', {textureURL:"/dirt.png"});
-noa.registry.registerMaterial('titanium_gen', {textureURL:"/dirt.png"});
-noa.registry.registerMaterial('sapphire_gen', {textureURL:"/dirt.png"});
-noa.registry.registerMaterial('diamond_gen', {textureURL:"/dirt.png"});
-noa.registry.registerMaterial('emerald_gen', {textureURL:"/dirt.png"});
-noa.registry.registerMaterial('adamantine_gen', {textureURL:"/dirt.png"});
+noa.registry.registerMaterial('coal_gen', {textureURL:"/coal_ore.png"});
+noa.registry.registerMaterial('iron_gen', {textureURL:"/iron_ore.png"});
+noa.registry.registerMaterial('gold_gen', {textureURL:"/gold_ore.png"});
+noa.registry.registerMaterial('titanium_gen', {textureURL:"/titanium_ore.png"});
+noa.registry.registerMaterial('sapphire_gen', {textureURL:"/sapphire_ore.png"});
+noa.registry.registerMaterial('diamond_gen', {textureURL:"/diamond_ore.png"});
+noa.registry.registerMaterial('emerald_gen', {textureURL:"/emerald_ore.png"});
+noa.registry.registerMaterial('adamantine_gen', {textureURL:"/adamantine_ore.png"});
 
 noa.registry.registerMaterial('water', {color:[0.5,0.75,1,0.5]});
 //noa.registry.registerMaterial(name, {textureURL?: string, color?: number[]})
@@ -401,92 +402,83 @@ let gei={
 
 var coal_genID = noa.registry.registerBlock(23, {
 	material: 'coal_gen',
-	/*
 	onSet: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,20,12,6),"coal_gen");
 	},
 	onLoad: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,20,12,6),"coal_gen");
 	},
-	*/
 });
 
 var iron_genID = noa.registry.registerBlock(24, {
 	material: 'iron_gen',
-	/*
 	onSet: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,20,13,7),"iron_gen");
 	},
 	onLoad: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,20,13,7),"iron_gen");
-	},*/
+	},
 });
 
 var gold_genID = noa.registry.registerBlock(25, {
 	material: 'gold_gen',
-	/*
 	onSet: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,20,14,8),"gold_gen");
 	},
 	onLoad: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,20,14,8),"gold_gen");
-	},*/
+	},
 });
 
 var titanium_genID = noa.registry.registerBlock(26, {
 	material: 'titanium_gen',
-	/*
 	onSet: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,20,15,9),"titanium_gen");
 	},
 	onLoad: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,20,15,9),"titanium_gen");
-	},*/
+	},
 });
 
 var sapphire_genID = noa.registry.registerBlock(27, {
 	material: 'sapphire_gen',
-	/*
+
 	onSet: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,20,16,10),"sapphire_gen");
 	},
 	onLoad: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,20,16,10),"sapphire_gen");
-	},*/
+	},
 });
 
 var diamond_genID = noa.registry.registerBlock(28, {
 	material: 'diamond_gen',
-	/*
 	onSet: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,20,17,11),"diamond_gen");
 	},
 	onLoad: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,20,17,11),"diamond_gen");
-	},*/
+	},
 });
 
 var emerald_genID = noa.registry.registerBlock(29, {
 	material: 'emerald_gen',
-	/*
 	onSet: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,21,18,3),"emerald_gen");
 	},
 	onLoad: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,21,18,3),"emerald_gen");
 	},
-	*/
 });
 
 var adamantine_genID = noa.registry.registerBlock(30, {
 	material: 'adamantine_gen',
-	/*
 	onSet: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,22,19,3),"adamantine_gen");
 	},
 	onLoad: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,22,19,3),"adamantine_gen");
-	},*/
+	},
 });
 
 var waterID=noa.registry.registerBlock(31,{material:"water",fluid:!0,fluidDensity:0.67});
@@ -578,6 +570,7 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
 			+(perlin(l/32,m/32)*(scale/heightScale)/8);
             for (var j = 0; j < data.shape[1]; j++) {
                 var voxelID = getVoxelID(x + i, y + j, z + k,height);
+				/*
 				var voxelName=ID_TO_BLOCK[voxelID];
 				if(Object.keys(gens).includes(voxelName)){
 					let oreID=checkStoneT(x+i,y+j,z+k,...gei[voxelName]);
@@ -590,7 +583,7 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
 					}
 					return data.set(i,j,k,oreID);
 					//genFunc(x+i,y+j,z+k,checkStoneT(x+i,y+j,z+k,...gei[voxelName]),voxelName);
-				}
+				}*/
 				data.set(i, j, k, voxelID);
             }
         }
