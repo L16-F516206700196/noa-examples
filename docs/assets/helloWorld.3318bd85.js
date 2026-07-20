@@ -17,6 +17,7 @@ for(let i=0;i<256;i++){permutationTable.push(i)}
 let seedNum = 0;
 let scale=16;
 let heightScale=2.5;
+let caveHeightScale=3;
 const SQRT_HALF=0.70710678118654752;
 
 const gradientTable=[
@@ -132,10 +133,10 @@ const perlin3 = (x, y, z) => {
 //perlin frequencies here may look off because normally you should multiply x/16,y/16 by a higher number. However, k and l, which are used, are actually x/scale and z/scale, so it's the opposite here. Sorry for the strange behaviour lol
 const evalPerlinWithFBM=(x,y,z)=>{
 	let k=x/scale,l=y/scale,m=z/scale;
-	return (perlin3(k/16,l/24,m/16)*(scale/heightScale)/16)
-	+(perlin3(k/ 8,l/ 12,m/ 8)*(scale/heightScale)/8)
-	+(perlin3(k/ 3,l/ 4.5,m/ 3)*(scale/heightScale)/4)
-	+(perlin3(k/ 1,l/ 1.5,m/ 1)*(scale/heightScale)/8);
+	return (perlin3(k/16,l/24,m/16)*(scale/caveHeightScale)/16)
+	+(perlin3(k/ 8,l/ 12,m/ 8)*(scale/caveHeightScale)/8)
+	+(perlin3(k/ 3,l/ 4.5,m/ 3)*(scale/caveHeightScale)/4)
+	+(perlin3(k/ 1,l/ 1.5,m/ 1)*(scale/caveHeightScale)/8);
 }
 const shouldBeCaveAir = (x, y, z) => {
 	const sx=1,sy=1,sz=1;
@@ -144,7 +145,7 @@ const shouldBeCaveAir = (x, y, z) => {
 	cV/=9/4;
 	const t=smoothstep(caveThreshold-leniency,caveThreshold+leniency,cV)
 	let k=x/scale,l=y/scale,m=z/scale;
-	let tunnel=perlin3(k/12,l/12,m/12)*((scale/heightScale)/8)
+	let tunnel=perlin3(k/12,l/12,m/12)*((scale/caveHeightScale)/8)
 	tunnel+=11/32;
 	tunnel*=16/11
 	return t>0.5&&tunnel>0.12;
@@ -219,8 +220,8 @@ let gens={
 	titanium_gen:[-360,-112,3,5],
 	sapphire_gen:[-360,-144,3,5],
 	diamond_gen:[-360,-192,2,4],
-	emerald_gen:[-408,-288,1.5,3],
-	adamantine_gen:[-576,-384,1,2],
+	emerald_gen:[-512,-288,1.5,3],
+	adamantine_gen:[-864,-480,1,2],
 }
 const BLOCK_TO_ID={
 	"dirt":1,
@@ -278,18 +279,23 @@ const treeGen=[
 	(x,y,z,l,f,r)=>{
 		//length = 6-8
 		let logHeight = 6+(Math.abs(generateHash(`${x},${y},${z}|${seedNum}|oak_sapling`))%3);
-		setBlockRectR(x-3,y+(logHeight-2),z-2,x+3,y+(logHeight+2),z+2,0.05,r,f);
-		setBlockRectR(x-2,y+(logHeight-3),z-2,x+2,y+(logHeight+3),z+2,0.05,r,f);
-		setBlockRectR(x-2,y+(logHeight-1),z-3,x+2,y+(logHeight+1),z-3,0.05,r,f);
-		setBlockRectR(x-1,y+(logHeight-2),z-3,x+1,y+(logHeight+2),z-3,0.05,r,f);
-		setBlockRectR(x-2,y+(logHeight-1),z+3,x+2,y+(logHeight+1),z+3,0.05,r,f);
-		setBlockRectR(x-1,y+(logHeight-2),z+3,x+1,y+(logHeight+2),z+3,0.05,r,f);
+		setBlockRectR(x-3,y+(logHeight-2),z-1,x+3,y+(logHeight+2),z+1,0.05,r,f);
+		setBlockRectR(x-2,y+(logHeight-3),z-1,x+2,y+(logHeight+3),z+1,0.05,r,f);
+
+		setBlockRectR(x-2,y+(logHeight-1),z-2,x+2,y+(logHeight+1),z-2,0.05,r,f);
+		setBlockRectR(x-1,y+(logHeight-2),z-2,x+1,y+(logHeight+2),z-2,0.05,r,f);
+
+		setBlockRectR(x-2,y+(logHeight-1),z+2,x+2,y+(logHeight+1),z+2,0.05,r,f);
+		setBlockRectR(x-1,y+(logHeight-2),z+2,x+1,y+(logHeight+2),z+2,0.05,r,f);
+
+		setBlockRectR(x-1,y+(logHeight-1),z-3,x+1,y+(logHeight+1),z-3,0.05,r,f);
+		setBlockRectR(x-1,y+(logHeight-1),z+3,x+1,y+(logHeight+1),z+3,0.05,r,f);
 		setBlockRect(x,y,z,x,y+(logHeight-1),z,l);
 	}
 ]
 
 const checkStoneT=(x,y,z,r3,r2,r1)=>{
-	return y<(-384 + (generateHash(`${x},${y},${z}|${seedNum}|underworld_stone`)%3) )?r3:
+	return y<(-480 + (generateHash(`${x},${y},${z}|${seedNum}|underworld_stone`)%3) )?r3:
 	y<(-192 + (generateHash(`${x},${y},${z}|${seedNum}|depthstone`)%3) )?r2:
 	r1;
 }
@@ -320,14 +326,14 @@ noa.registry.registerMaterial('underworld_stone', {textureURL:"/underworld_stone
 noa.registry.registerMaterial('underworld_stone_emerald_ore', {textureURL:"/underworld_stone_emerald_ore.png"});
 noa.registry.registerMaterial('underworld_stone_adamantine_ore', {textureURL:"/underworld_stone_adamantine_ore.png"});
 
-noa.registry.registerMaterial('coal_gen', {textureURL:"/coal_ore.png"});
-noa.registry.registerMaterial('iron_gen', {textureURL:"/iron_ore.png"});
-noa.registry.registerMaterial('gold_gen', {textureURL:"/gold_ore.png"});
-noa.registry.registerMaterial('titanium_gen', {textureURL:"/titanium_ore.png"});
-noa.registry.registerMaterial('sapphire_gen', {textureURL:"/sapphire_ore.png"});
-noa.registry.registerMaterial('diamond_gen', {textureURL:"/diamond_ore.png"});
-noa.registry.registerMaterial('emerald_gen', {textureURL:"/depthstone_emerald_ore.png"});
-noa.registry.registerMaterial('adamantine_gen', {textureURL:"/depthstone_adamantine_ore.png"});
+noa.registry.registerMaterial('coal_gen', {textureURL:"/dirt.png"});
+noa.registry.registerMaterial('iron_gen', {textureURL:"/dirt.png"});
+noa.registry.registerMaterial('gold_gen', {textureURL:"/dirt.png"});
+noa.registry.registerMaterial('titanium_gen', {textureURL:"/dirt.png"});
+noa.registry.registerMaterial('sapphire_gen', {textureURL:"/dirt.png"});
+noa.registry.registerMaterial('diamond_gen', {textureURL:"/dirt.png"});
+noa.registry.registerMaterial('emerald_gen', {textureURL:"/dirt.png"});
+noa.registry.registerMaterial('adamantine_gen', {textureURL:"/dirt.png"});
 
 noa.registry.registerMaterial('water', {color:[0.5,0.75,1,0.5]});
 //noa.registry.registerMaterial(name, {textureURL?: string, color?: number[]})
@@ -440,7 +446,7 @@ var adamantine_genID = noa.registry.registerBlock(30, {
 	},
 });
 
-var waterID=noa.registry.registerBlock(31,{material:"water",fluid:!0,fluidDensity:0.4});
+var waterID=noa.registry.registerBlock(31,{material:"water",fluid:!0,fluidDensity:0.67});
 var oak_saplingID = noa.registry.registerBlock(32, {
 	material: 'oak_sapling',
 	onSet: (x,y,z)=>{
@@ -482,8 +488,8 @@ var oak_sapling_auto_genID = noa.registry.registerBlock(33, {
 // simple height map worldgen function
 function getVoxelID(x, y, z,height) {
 	let amount = Math.round(height);
-	if (y < -576) return 0;
-	if (y === -576) return bedrockID;
+	if (y < -864) return 0;
+	if (y === -864) return bedrockID;
 	if(shouldBeCaveAir(x,y,z)&&y<amount)return 0;
 	for(let I of Object.keys(gens)){
 		let J = gens[I]; // [min, max, chancePerBlock]
@@ -494,14 +500,16 @@ function getVoxelID(x, y, z,height) {
 			return BLOCK_TO_ID[I];
 		};
 	}
-	if (y < -384 + (generateHash(`${x},${y},${z}|${seedNum}|underworld_stone`)%3))return underworld_stoneID
+	if (y < -480 + (generateHash(`${x},${y},${z}|${seedNum}|underworld_stone`)%3))return underworld_stoneID
 	if (y < -192 + (generateHash(`${x},${y},${z}|${seedNum}|depthstone`)%3))return depthstoneID
 	if (y < amount-5) return stoneID
     if (y < amount-1) return dirtID
     
     if (y < amount) return grassID
-	if (y >= amount && y < -3) return waterID;
-	if(y<amount+1&&(generateHash(`${x},${y},${z}|${seedNum}|oak_sapling`)&4095)>4094)return oak_sapling_auto_genID;
+	if (y >= amount && y < -3 && noa.getBlock(x,y-1,z)) return waterID;
+	let treeX=Math.abs(generateHash(`${Math.floor(x/16)},${Math.floor(y/16)},${Math.floor(z/16)}|oak_sapling,x`)) & 7;
+	let treeZ=Math.abs(generateHash(`${Math.floor(x/16)},${Math.floor(y/16)},${Math.floor(z/16)}|oak_sapling,z`)) & 7;
+	if(y<amount+1&&treeX===x&&treeZ===z&&noa.getBlock(x,y-1,z))return oak_sapling_auto_genID;
 	
     return 0 // signifying empty space
 }
@@ -519,7 +527,8 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
 			+(perlin(l/2,m/2)*(scale/heightScale)/2)
 			+(perlin(l/4,m/4)*(scale/heightScale)/4)
 			+(perlin(l/8,m/8)*(scale/heightScale)/8)
-			+(perlin(l/16,m/16)*(scale/heightScale)/4);
+			+(perlin(l/16,m/16)*(scale/heightScale)/4)
+			+(perlin(l/32,m/32)*(scale/heightScale)/8);
             for (var j = 0; j < data.shape[1]; j++) {
                 var voxelID = getVoxelID(x + i, y + j, z + k,height);
 				data.set(i, j, k, voxelID);
