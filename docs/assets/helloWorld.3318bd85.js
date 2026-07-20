@@ -293,6 +293,10 @@ const Blocks=Object.keys(BLOCK_TO_ID),BIds=Object.values(BLOCK_TO_ID);
 let ID_TO_BLOCK=[
 	"air",
 	...Blocks
+];
+// [blockID,x,y,z]
+let queuedBlock=[
+
 ]
 
 const genFunc=(x,y,z,oreS,genName)=>{
@@ -301,9 +305,9 @@ const genFunc=(x,y,z,oreS,genName)=>{
 	for(let I=0;I<genAmt;I++){
 		let r1=(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}x`))%5,
 			r2=(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}z`))%5;
-		if(isStone.includes(noa.getBlock(x+r1,y,z+r2)))noa.setBlock(oreS,x+r1,y,z+r2);
+		if(isStone.includes(noa.getBlock(x+r1,y,z+r2)))queuedBlock.push([oreS,x+r1,y,z+r2]);
 	}
-	noa.setBlock(oreS,x,y,z);	
+	queuedBlock.push([oreS,x,y,z]);	
 }
 // l=Logs,f=Foliage,r=fRuit
 const treeGen=[
@@ -681,6 +685,11 @@ noa.inputs.down.on("toggle-check-place",()=>{
 })
 // each tick, consume any scroll events and use them to zoom camera
 noa.on('tick', function (dt) {
+	if(queuedBlock.length>0){
+		let queuedBlock0=queuedBlock[0];
+		noa.setBlock(...queuedBlock0)
+		queuedBlock.splice(0,1);
+	}
     var scroll = noa.inputs.state.scrolly
     if (scroll !== 0) {
         noa.camera.zoomDistance += (scroll > 0) ? 1 : -1
