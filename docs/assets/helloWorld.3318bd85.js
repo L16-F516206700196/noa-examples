@@ -188,6 +188,11 @@ const setBlockRectR=(x1,y1,z1,x2,y2,z2,c,b1,b2)=>{
 	}
 };
 
+const playAudio = src => {
+	var audio = new Audio(src);
+	audio.play();
+}
+
 // block materials
 
 let isOre=[
@@ -258,6 +263,25 @@ const BLOCK_TO_ID={
 	"oak_sapling":32,
 	"oak_sapling_auto_gen":33
 };
+const sounds={
+	gravel:[1,2,32,33],
+	stone:[3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],
+	wood:[34],
+}
+const BlockMD={
+	1:{
+		audio:"gravel",
+	},
+	2:{
+		audio:"gravel",
+	},
+	3:{
+		audio:"stone",
+	},
+	4:{
+		audio:"stone",
+	},
+}
 const Blocks=Object.keys(BLOCK_TO_ID),BIds=Object.values(BLOCK_TO_ID);
 let ID_TO_BLOCK=[
 	"air",
@@ -558,7 +582,7 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
 					for(let I=0;I<genAmt;I++){
 						let r1=(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}x`))%5,
 							r2=(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}z`))%5;
-						if(isStone.includes(noa.getBlock(x+i+r1,y+j,z+k+r2)))data.set(Math.min(15,Math.max(0,i+r1)),j,Math.min(15,Math.max(0,k+r2)),oreID);
+						if(isStone.includes(noa.getBlock(x+i+r1,y+j,z+k+r2)))noa.setBlock(oreID,x+i+r1,y+j,z+k+r2);
 					}
 					return data.set(i,j,k,oreID);
 					//genFunc(x+i,y+j,z+k,checkStoneT(x+i,y+j,z+k,...gei[voxelName]),voxelName);
@@ -599,6 +623,9 @@ noa.inputs.down.on('alt-fire', function () {
     if (noa.targetedBlock) {
         var pos = noa.targetedBlock.adjacent
         noa[toggleCheck?"addBlock":"setBlock"](pickedID, pos[0], pos[1], pos[2])
+		if(sounds.gravel.includes(pickedID)){playAudio(`../docs/hello-world/sounds/gravel${Math.ceil(Math.random()*6)}`)}
+		if(sounds.stone.includes(pickedID)){playAudio(`../docs/hello-world/sounds/stone${Math.ceil(Math.random()*6)}`)}
+		if(sounds.wood.includes(pickedID)){playAudio(`../docs/hello-world/sounds/wood${Math.ceil(Math.random()*6)}`)}
     }
 })
 
