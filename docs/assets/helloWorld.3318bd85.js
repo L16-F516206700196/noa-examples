@@ -16,7 +16,7 @@ for(let i=0;i<256;i++){permutationTable.push(i)}
 //perlin by FWJ7 / L16_F51620, normalisation for angleGen3 by GPT 5.4 nano (idk trig lol)
 let seedNum = 0;
 let scale=16;
-let heightScale=4;
+let heightScale=3;
 const SQRT_HALF=0.70710678118654752;
 
 const gradientTable=[
@@ -214,15 +214,13 @@ let isStone=[
 ]
 let gens={
 	coal_gen:[-240,-16,5,12],
-	/*
-	iron_ore:[-240,-32,4.5,9],
-	gold_ore:[-240,-64,4,6],
-	titanium_ore:[-240,-96,3,5],
-	sapphire_ore:[-240,-112,3,5],
-	diamond_ore:[-240,-128,2,4],
-	emerald_ore:[-272,-192,1.5,3],
-	adamantine_ore:[-384,-256,1,2],
-	*/
+	iron_gen:[-240,-32,4.5,9],
+	gold_gen:[-240,-64,4,6],
+	titanium_gen:[-240,-96,3,5],
+	sapphire_gen:[-240,-112,3,5],
+	diamond_gen:[-240,-128,2,4],
+	emerald_gen:[-272,-192,1.5,3],
+	adamantine_gen:[-384,-256,1,2],
 }
 const BLOCK_TO_ID={
 	"dirt":1,
