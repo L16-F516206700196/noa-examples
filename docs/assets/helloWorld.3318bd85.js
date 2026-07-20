@@ -510,7 +510,11 @@ var oak_sapling_auto_genID = noa.registry.registerBlock(33, {
 	},
 });
 
-
+const playBlockSound=blockID=>{
+	if(sounds.gravel.includes(blockID)){playAudio(`../hello-world/sounds/gravel${Math.ceil(Math.random()*6)}.mp3`)}
+	if(sounds.stone.includes(blockID)){playAudio(`../hello-world/sounds/stone${Math.ceil(Math.random()*6)}.mp3`)}
+	if(sounds.wood.includes(blockID)){playAudio(`../hello-world/sounds/wood${Math.ceil(Math.random()*6)}.mp3`)}
+}
 
 //noa.registry.registerMaterial(blockID, opts)
 
@@ -605,6 +609,8 @@ a.material=e.rendering.makeStandardMaterial();e.entities.addComponent(g,e.entiti
 noa.inputs.down.on('fire', function () {
     if (noa.targetedBlock) {
         var pos = noa.targetedBlock.position
+		var targetedBlockID=noa.targetedBlock.blockID;
+		playBlockSound(targetedBlockID);
         noa.setBlock(0, pos[0], pos[1], pos[2])
     }
 })
@@ -622,10 +628,16 @@ noa.inputs.bind('mid-fire', 'KeyK')
 noa.inputs.down.on('alt-fire', function () {
     if (noa.targetedBlock) {
         var pos = noa.targetedBlock.adjacent
-        noa[toggleCheck?"addBlock":"setBlock"](pickedID, pos[0], pos[1], pos[2])
-		if(sounds.gravel.includes(pickedID)){playAudio(`../hello-world/sounds/gravel${Math.ceil(Math.random()*6)}.mp3`)}
-		if(sounds.stone.includes(pickedID)){playAudio(`../hello-world/sounds/stone${Math.ceil(Math.random()*6)}.mp3`)}
-		if(sounds.wood.includes(pickedID)){playAudio(`../hello-world/sounds/wood${Math.ceil(Math.random()*6)}.mp3`)}
+		
+		if(toggleCheck){
+			if(!noa.entities.isTerrainBlocked(pos[0], pos[1], pos[2])){
+				playBlockSound(pickedID);
+			}
+		}else{
+			playBlockSound(pickedID);
+		}
+        noa[toggleCheck?"addBlock":"setBlock"](pickedID, pos[0], pos[1], pos[2]);
+		
     }
 })
 
