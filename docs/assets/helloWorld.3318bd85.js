@@ -364,86 +364,105 @@ var depthstone_adamantine_oreID = noa.registry.registerBlock(19, {material: 'dep
 var underworld_stoneID = noa.registry.registerBlock(20, {material: 'underworld_stone'})
 var underworld_stone_emerald_oreID = noa.registry.registerBlock(21, {material: 'underworld_stone_emerald_ore'})
 var underworld_stone_adamantine_oreID = noa.registry.registerBlock(22, {material: 'underworld_stone_adamantine_ore'})
-
+let gei={
+	"coal_gen":[20,12,6],
+	"iron_gen":[20,13,7],
+	"gold_gen":[20,14,8],
+	"titanium_gen":[20,15,9],
+	"sapphire_gen":[20,16,10],
+	"diamond_gen":[20,17,11],
+	"emerald_gen":[21,18,3],
+	"adamantine_gen":[22,19,3],
+};
 
 var coal_genID = noa.registry.registerBlock(23, {
 	material: 'coal_gen',
+	/*
 	onSet: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,20,12,6),"coal_gen");
 	},
 	onLoad: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,20,12,6),"coal_gen");
 	},
+	*/
 });
 
 var iron_genID = noa.registry.registerBlock(24, {
 	material: 'iron_gen',
+	/*
 	onSet: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,20,13,7),"iron_gen");
 	},
 	onLoad: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,20,13,7),"iron_gen");
-	},
+	},*/
 });
 
 var gold_genID = noa.registry.registerBlock(25, {
 	material: 'gold_gen',
+	/*
 	onSet: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,20,14,8),"gold_gen");
 	},
 	onLoad: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,20,14,8),"gold_gen");
-	},
+	},*/
 });
 
 var titanium_genID = noa.registry.registerBlock(26, {
 	material: 'titanium_gen',
+	/*
 	onSet: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,20,15,9),"titanium_gen");
 	},
 	onLoad: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,20,15,9),"titanium_gen");
-	},
+	},*/
 });
 
 var sapphire_genID = noa.registry.registerBlock(27, {
 	material: 'sapphire_gen',
+	/*
 	onSet: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,20,16,10),"sapphire_gen");
 	},
 	onLoad: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,20,16,10),"sapphire_gen");
-	},
+	},*/
 });
 
 var diamond_genID = noa.registry.registerBlock(28, {
 	material: 'diamond_gen',
+	/*
 	onSet: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,20,17,11),"diamond_gen");
 	},
 	onLoad: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,20,17,11),"diamond_gen");
-	},
+	},*/
 });
 
 var emerald_genID = noa.registry.registerBlock(29, {
 	material: 'emerald_gen',
+	/*
 	onSet: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,21,18,3),"emerald_gen");
 	},
 	onLoad: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,21,18,3),"emerald_gen");
 	},
+	*/
 });
 
 var adamantine_genID = noa.registry.registerBlock(30, {
 	material: 'adamantine_gen',
+	/*
 	onSet: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,22,19,3),"adamantine_gen");
 	},
 	onLoad: (x,y,z)=>{
 		return genFunc(x,y,z,checkStoneT(x,y,z,22,19,3),"adamantine_gen");
-	},
+	},*/
 });
 
 var waterID=noa.registry.registerBlock(31,{material:"water",fluid:!0,fluidDensity:0.67});
@@ -531,6 +550,19 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
 			+(perlin(l/32,m/32)*(scale/heightScale)/8);
             for (var j = 0; j < data.shape[1]; j++) {
                 var voxelID = getVoxelID(x + i, y + j, z + k,height);
+				var voxelName=ID_TO_BLOCK[voxelID];
+				if(Object.keys(gens).includes(voxelName)){
+					let oreID=checkStoneT(x+i,y+j,z+k,...gei[voxelName]);
+					let oreN=ID_TO_BLOCK[oreID];
+					let genAmt=gens[voxelName][3];
+					for(let I=0;I<genAmt;I++){
+						let r1=(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}x`))%5,
+							r2=(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}z`))%5;
+						if(isStone.includes(noa.getBlock(x+i+r1,y+j,z+k+r2)))data.set(Math.min(15,Math.max(0,i+r1)),j,Math.min(15,Math.max(0,k+r2)),oreID);
+					}
+					return data.set(i,j,k,oreID);
+					//genFunc(x+i,y+j,z+k,checkStoneT(x+i,y+j,z+k,...gei[voxelName]),voxelName);
+				}
 				data.set(i, j, k, voxelID);
             }
         }
