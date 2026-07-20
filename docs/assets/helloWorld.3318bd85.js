@@ -623,9 +623,9 @@ noa.inputs.down.on('alt-fire', function () {
     if (noa.targetedBlock) {
         var pos = noa.targetedBlock.adjacent
         noa[toggleCheck?"addBlock":"setBlock"](pickedID, pos[0], pos[1], pos[2])
-		if(sounds.gravel.includes(pickedID)){playAudio(`../docs/hello-world/sounds/gravel${Math.ceil(Math.random()*6)}`)}
-		if(sounds.stone.includes(pickedID)){playAudio(`../docs/hello-world/sounds/stone${Math.ceil(Math.random()*6)}`)}
-		if(sounds.wood.includes(pickedID)){playAudio(`../docs/hello-world/sounds/wood${Math.ceil(Math.random()*6)}`)}
+		if(sounds.gravel.includes(pickedID)){playAudio(`../hello-world/sounds/gravel${Math.ceil(Math.random()*6)}`)}
+		if(sounds.stone.includes(pickedID)){playAudio(`../hello-world/sounds/stone${Math.ceil(Math.random()*6)}`)}
+		if(sounds.wood.includes(pickedID)){playAudio(`../hello-world/sounds/wood${Math.ceil(Math.random()*6)}`)}
     }
 })
 
