@@ -687,7 +687,8 @@ noa.inputs.down.on("toggle-check-place",()=>{
 noa.on('tick', function (dt) {
 	if(queuedBlock.length>0){
 		let queuedBlock0=queuedBlock[0];
-		noa.setBlock(...queuedBlock0)
+		console.log(queuedBlock,queuedBlock0);
+		noa.setBlock(...queuedBlock0);
 		queuedBlock.splice(0,1);
 	}
     var scroll = noa.inputs.state.scrolly
