@@ -16,7 +16,7 @@ for(let i=0;i<256;i++){permutationTable.push(i)}
 //perlin by FWJ7 / L16_F51620, normalisation for angleGen3 by GPT 5.4 nano (idk trig lol)
 let seedNum = 0;
 let scale=16;
-let heightScale=3;
+let heightScale=2.5;
 const SQRT_HALF=0.70710678118654752;
 
 const gradientTable=[
@@ -213,14 +213,14 @@ let isStone=[
 	20,
 ]
 let gens={
-	coal_gen:[-240,-16,5,12],
-	iron_gen:[-240,-32,4.5,9],
-	gold_gen:[-240,-64,4,6],
-	titanium_gen:[-240,-96,3,5],
-	sapphire_gen:[-240,-112,3,5],
-	diamond_gen:[-240,-128,2,4],
-	emerald_gen:[-272,-192,1.5,3],
-	adamantine_gen:[-384,-256,1,2],
+	coal_gen:[-360,-16,5,12],
+	iron_gen:[-360,-48,4.5,9],
+	gold_gen:[-360,-96,4,6],
+	titanium_gen:[-360,-112,3,5],
+	sapphire_gen:[-360,-144,3,5],
+	diamond_gen:[-360,-192,2,4],
+	emerald_gen:[-408,-288,1.5,3],
+	adamantine_gen:[-576,-384,1,2],
 }
 const BLOCK_TO_ID={
 	"dirt":1,
@@ -289,8 +289,8 @@ const treeGen=[
 ]
 
 const checkStoneT=(x,y,z,r3,r2,r1)=>{
-	return y<(-256 + (generateHash(`${x},${y},${z}|${seedNum}|underworld_stone`)%3) )?r3:
-	y<(-128 + (generateHash(`${x},${y},${z}|${seedNum}|depthstone`)%3) )?r2:
+	return y<(-384 + (generateHash(`${x},${y},${z}|${seedNum}|underworld_stone`)%3) )?r3:
+	y<(-192 + (generateHash(`${x},${y},${z}|${seedNum}|depthstone`)%3) )?r2:
 	r1;
 }
 
@@ -482,8 +482,8 @@ var oak_sapling_auto_genID = noa.registry.registerBlock(33, {
 // simple height map worldgen function
 function getVoxelID(x, y, z,height) {
 	let amount = Math.round(height);
-	if (y < -384) return 0;
-	if (y === -384) return bedrockID;
+	if (y < -576) return 0;
+	if (y === -576) return bedrockID;
 	if(shouldBeCaveAir(x,y,z)&&y<amount)return 0;
 	for(let I of Object.keys(gens)){
 		let J = gens[I]; // [min, max, chancePerBlock]
@@ -494,8 +494,8 @@ function getVoxelID(x, y, z,height) {
 			return BLOCK_TO_ID[I];
 		};
 	}
-	if (y < -256 + (generateHash(`${x},${y},${z}|${seedNum}|underworld_stone`)%3))return underworld_stoneID
-	if (y < -128 + (generateHash(`${x},${y},${z}|${seedNum}|depthstone`)%3))return depthstoneID
+	if (y < -384 + (generateHash(`${x},${y},${z}|${seedNum}|underworld_stone`)%3))return underworld_stoneID
+	if (y < -192 + (generateHash(`${x},${y},${z}|${seedNum}|depthstone`)%3))return depthstoneID
 	if (y < amount-5) return stoneID
     if (y < amount-1) return dirtID
     
