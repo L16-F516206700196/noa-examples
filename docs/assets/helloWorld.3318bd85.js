@@ -324,7 +324,7 @@ const checkStoneT=(x,y,z,r3,r2,r1)=>{
 	r1;
 }
 
-noa.registry.registerMaterial('dirt', {textureURL:"/dirt.png"});
+noa.registry.registerMaterial('dirt', {textureURL:"/dirst.png"});
 noa.registry.registerMaterial('grass_block_top', {textureURL:"/grass_block_top.png"});
 noa.registry.registerMaterial('stone', {textureURL:"/stone.png"}); //stone
 noa.registry.registerMaterial('depthstone', {textureURL:"/depthstone.png"}); //darker stone
