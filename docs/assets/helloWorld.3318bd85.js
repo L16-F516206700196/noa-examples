@@ -261,13 +261,19 @@ const BLOCK_TO_ID={
 	"emerald_gen":29,
 	"adamantine_gen":30,
 	"water":31,
-	"oak_sapling":32,
-	"oak_sapling_auto_gen":33
+	"log_oak":32,
+	"leaves_oak":33,
+	"leaves_oak_apple":34,
+	"planks_oak":35,
+	"log_oak_stripped":36,
+	"sapling_oak":37,
+	"sapling_oak_auto_gen":38
 };
 const sounds={
-	gravel:[1,2,32,33],
+	gravel:[1,2],
 	stone:[3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],
-	wood:[34],
+	wood:[32,35,36],
+	foliage:[33,34,37,38],
 }
 const BlockMD={
 	1:{
@@ -301,9 +307,9 @@ const genFunc=(x,y,z,oreS,genName)=>{
 }
 // l=Logs,f=Foliage,r=fRuit
 const treeGen=[
-	(x,y,z,l,f,r)=>{
+	(x,y,z,s,l,f,r)=>{
 		//length = 6-8
-		let logHeight = 6+(Math.abs(generateHash(`${x},${y},${z}|${seedNum}|oak_sapling`))%3);
+		let logHeight = 6+(Math.abs(generateHash(`${x},${y},${z}|${seedNum}|${s}`))%3);
 		setBlockRectR(x-3,y+(logHeight-2),z-1,x+3,y+(logHeight+2),z+1,0.05,r,f);
 		setBlockRectR(x-2,y+(logHeight-3),z-1,x+2,y+(logHeight+3),z+1,0.05,r,f);
 
@@ -361,6 +367,12 @@ noa.registry.registerMaterial('emerald_gen', {textureURL:"/emerald_ore.png"});
 noa.registry.registerMaterial('adamantine_gen', {textureURL:"/adamantine_ore.png"});
 
 noa.registry.registerMaterial('water', {color:[0.5,0.75,1,0.5]});
+
+noa.registry.registerMaterial('log_oak', {textureURL:"/log_oak.png"});
+noa.registry.registerMaterial('leaves_oak', {textureURL:"/leaves_oak.png"});
+noa.registry.registerMaterial('leaves_oak_apple', {textureURL:"/leaves_oak_apple.png"});
+noa.registry.registerMaterial('planks_oak', {textureURL:"/planks_oak.png"});
+noa.registry.registerMaterial('log_oak_stripped', {textureURL:"/log_oak_stripped.png"});
 //noa.registry.registerMaterial(name, {textureURL?: string, color?: number[]})
 
 // block types and their material names
@@ -482,8 +494,15 @@ var adamantine_genID = noa.registry.registerBlock(30, {
 });
 
 var waterID=noa.registry.registerBlock(31,{material:"water",fluid:!0,fluidDensity:0.67});
-var oak_saplingID = noa.registry.registerBlock(32, {
-	material: 'oak_sapling',
+
+var log_oakID = noa.registry.registerBlock(32, {material: 'log_oak'});
+var leaves_oakID = noa.registry.registerBlock(33, {material: 'leaves_oak'});
+var leaves_oak_appleID = noa.registry.registerBlock(34, {material: 'leaves_oak_apple'});
+var planks_oakID = noa.registry.registerBlock(35, {material: 'planks_oak'});
+var log_oak_strippedID = noa.registry.registerBlock(36, {material: 'log_oak_stripped'});
+
+var sapling_oakID = noa.registry.registerBlock(37, {
+	material: 'sapling_oak',
 	onSet: (x,y,z)=>{
 		return
 	},
@@ -492,15 +511,17 @@ var oak_saplingID = noa.registry.registerBlock(32, {
 	},
 });
 
-var oak_sapling_auto_genID = noa.registry.registerBlock(33, {
-	material: 'oak_sapling_auto_gen',
+var sapling_oak_auto_genID = noa.registry.registerBlock(38, {
+	material: 'sapling_oak_auto_gen',
 	onSet: (x,y,z)=>{
-		return treeGen[0](x,y,z,1,2,3)
+		return treeGen[0](x,y,z,"sapling_oak",log_oakID,leaves_oakID,leaves_oak_appleID)
 	},
 	onLoad: (x,y,z)=>{
-		return treeGen[0](x,y,z,1,2,3)
+		return treeGen[0](x,y,z,"sapling_oak",log_oakID,leaves_oakID,leaves_oak_appleID)
 	},
 });
+
+
 
 const playBlockSound=blockID=>{
 	if(sounds.gravel.includes(blockID)){playAudio(`../hello-world/sounds/gravel${Math.ceil(Math.random()*6)}.mp3`)}
@@ -546,9 +567,9 @@ function getVoxelID(x, y, z,height) {
     
     if (y < amount) return grassID
 	if (y >= amount && y < -3 && noa.getBlock(x,y-1,z)) return waterID;
-	let treeX=Math.abs(generateHash(`${Math.floor(x/16)},${Math.floor(y/16)},${Math.floor(z/16)}|oak_sapling,x`)) & 7;
-	let treeZ=Math.abs(generateHash(`${Math.floor(x/16)},${Math.floor(y/16)},${Math.floor(z/16)}|oak_sapling,z`)) & 7;
-	if(y<amount+1&&treeX===x&&treeZ===z&&noa.getBlock(x,y-1,z))return oak_sapling_auto_genID;
+	let treeX=Math.abs(generateHash(`${Math.floor(x/16)},${Math.floor(y/16)},${Math.floor(z/16)}|sapling_oak,x`)) & 7;
+	let treeZ=Math.abs(generateHash(`${Math.floor(x/16)},${Math.floor(y/16)},${Math.floor(z/16)}|sapling_oak,z`)) & 7;
+	if(y<amount+1&&treeX===x&&treeZ===z&&noa.getBlock(x,y-1,z))return sapling_oak_auto_genID;
 	
     return 0 // signifying empty space
 }
