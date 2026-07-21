@@ -220,14 +220,14 @@ let isStone=[
 	20,
 ]
 let gens={
-	coal_gen:[-360,-16,5,12],
-	iron_gen:[-360,-48,4.5,9],
-	gold_gen:[-360,-96,4,6],
-	titanium_gen:[-360,-112,3,5],
-	sapphire_gen:[-360,-144,3,5],
-	diamond_gen:[-360,-192,2,4],
-	emerald_gen:[-512,-288,1.5,3],
-	adamantine_gen:[-864,-480,1,2],
+	coal_gen:[-360,-16,5,12,4],
+	iron_gen:[-360,-48,4.5,9,3],
+	gold_gen:[-360,-96,4,6,3],
+	titanium_gen:[-360,-112,3,5,3],
+	sapphire_gen:[-360,-144,3,5,3],
+	diamond_gen:[-360,-192,2,4,2],
+	emerald_gen:[-512,-288,1.5,3,2],
+	adamantine_gen:[-864,-480,1,2,2],
 }
 const BLOCK_TO_ID={
 	"dirt":1,
@@ -301,10 +301,12 @@ let queuedBlock=[
 
 const genFunc=(x,y,z,oreS,genName)=>{
 	let oreN=ID_TO_BLOCK[oreS];
-	let genAmt=gens[genName][3];
+	let genInfo=gens[genName],genAmt=genInfo[3];
 	for(let I=0;I<genAmt;I++){
-		let r1=(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}x`))%5,
-			r2=(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}z`))%5;
+		let sr1=(Math.abs((generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}xu`))&1)-0.5)*2,
+			sr2=(Math.abs((generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}zu`))&1)-0.5)*2;
+		let r1=sr1*(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}x`))%Math.ceil(Math.sqrt(genInfo[4])),
+			r2=sr2*(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}z`))%Math.ceil(Math.sqrt(genInfo[4]));
 		if(isStone.includes(noa.getBlock(x+r1,y,z+r2)))queuedBlock.push([oreS,x+r1,y,z+r2]);
 	}
 	queuedBlock.push([oreS,x,y,z]);	
@@ -686,7 +688,7 @@ noa.inputs.down.on("toggle-check-place",()=>{
 // each tick, consume any scroll events and use them to zoom camera
 noa.on('tick', function (dt) {
 	if(queuedBlock.length>0){
-		for(let i=0;i<16;i++){
+		for(let i=0;i<8;i++){
 			if(queuedBlock.length<1)return;
 			let queuedBlock0=queuedBlock[0];
 			console.log(queuedBlock,queuedBlock0);
