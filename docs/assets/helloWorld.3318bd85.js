@@ -688,7 +688,7 @@ noa.inputs.down.on("toggle-check-place",()=>{
 // each tick, consume any scroll events and use them to zoom camera
 noa.on('tick', function (dt) {
 	if(queuedBlock.length>0){
-		for(let i=0;i<8;i++){
+		for(let i=0;i<16;i++){
 			if(queuedBlock.length<1)return;
 			let queuedBlock0=queuedBlock[0];
 			console.log(queuedBlock,queuedBlock0);
