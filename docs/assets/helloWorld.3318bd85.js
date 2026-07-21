@@ -575,7 +575,7 @@ function getVoxelID(x, y, z,height) {
 	if (y >= amount && y < -3 && noa.getBlock(x,y-1,z)) return waterID;
 	let treeX=Math.abs(generateHash(`${Math.floor(x/16)},${Math.floor(y/16)},${Math.floor(z/16)}|sapling_oak,x`)) & 7;
 	let treeZ=Math.abs(generateHash(`${Math.floor(x/16)},${Math.floor(y/16)},${Math.floor(z/16)}|sapling_oak,z`)) & 7;
-	if(y<amount+1&&treeX===x&&treeZ===z&&noa.getBlock(x,y-1,z))return sapling_oak_auto_genID;
+	if(y<amount+1&&Math.floor(x/16)+treeX===x&&Math.floor(z/16)+treeZ===z&&noa.getBlock(x,y-1,z))return sapling_oak_auto_genID;
 	
     return 0 // signifying empty space
 }
