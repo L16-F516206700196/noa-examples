@@ -541,7 +541,7 @@ const playBlockSound=blockID=>{
 */
 
 // simple height map worldgen function
-function getVoxelID(x, y, z,height) {
+function getVoxelID(x, y, z,height,data) {
 	let amount = Math.round(height);
 	if (y < -864) return 0;
 	if (y === -864) return bedrockID;
@@ -571,7 +571,7 @@ function getVoxelID(x, y, z,height) {
 
 // register for world events
 noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
-	console.log(data);
+	console.log(data.get(0,0,0))
 	// `id` - a unique string id for the chunk
 	// `data` - an `ndarray` of voxel ID data (see: https://github.com/scijs/ndarray)
 	// `x, y, z` - world coords of the corner of the chunk
@@ -586,7 +586,7 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
 			+(perlin(l/16,m/16)*(scale/heightScale)/4)
 			+(perlin(l/32,m/32)*(scale/heightScale)/8);
 			for (var j = 0; j < data.shape[1]; j++) {
-				var voxelID = getVoxelID(x + i, y + j, z + k,height);
+				var voxelID = getVoxelID(x + i, y + j, z + k,height,data);
 				/*
 				var voxelName=ID_TO_BLOCK[voxelID];
 				if(Object.keys(gens).includes(voxelName)){
