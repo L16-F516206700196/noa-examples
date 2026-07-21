@@ -221,14 +221,14 @@ let isStone=[
 	20,
 ]
 let gens={
-	coal_gen:[-360,-16,5,12,4],
-	iron_gen:[-360,-48,4.5,9,3],
-	gold_gen:[-360,-96,4,6,3],
-	titanium_gen:[-360,-112,3,5,3],
-	sapphire_gen:[-360,-144,3,5,3],
-	diamond_gen:[-360,-192,2,4,2],
-	emerald_gen:[-512,-288,1.5,3,2],
-	adamantine_gen:[-864,-480,1,2,2],
+	coal_gen:[-360,-16,5,12,8],
+	iron_gen:[-360,-48,4.5,9,7],
+	gold_gen:[-360,-96,4,6,6],
+	titanium_gen:[-360,-112,3,5,6],
+	sapphire_gen:[-360,-144,3,5,5],
+	diamond_gen:[-360,-192,2,4,5],
+	emerald_gen:[-512,-288,1.5,3,4],
+	adamantine_gen:[-864,-480,1,2,3],
 }
 
 const sounds={
@@ -336,10 +336,11 @@ noa.registry.registerMaterial('mini_depthstone_bricks', {textureURL:"/mini_depth
 noa.registry.registerMaterial('underworld_brick', {textureURL:"/underworld_brick.png"});
 noa.registry.registerMaterial('underworld_tiles', {textureURL:"/underworld_tiles.png"});
 noa.registry.registerMaterial('mini_underworld_bricks', {textureURL:"/mini_underworld_bricks.png"});
+noa.registry.registerMaterial('grass_block_side',{textureURL:"/grass_block_side.png"})
 //noa.registry.registerMaterial(name, {textureURL?: string, color?: number[]})
 const BLOCK_TO_ID={
 	"dirt":1,
-	"grass_block_top":2,
+	"grass_block_full":2,
 	"stone":3,
 	"depthstone":4,
 	"bedrock":5,
@@ -481,7 +482,7 @@ let ID_TO_BLOCK=[
 ];
 // block types and their material names
 var dirtID = noa.registry.registerBlock(1, {material: 'dirt'})
-var grassID = noa.registry.registerBlock(2, {material: 'grass_block_top'})
+var grassFullID = noa.registry.registerBlock(2, {material: 'grass_block_top'})
 var stoneID = noa.registry.registerBlock(3, {material: 'stone'})
 var depthstoneID = noa.registry.registerBlock(4, {material: 'depthstone'})
 var bedrockID = noa.registry.registerBlock(5, {material: 'bedrock'})
@@ -515,7 +516,7 @@ var sapling_oak_auto_genID = noa.registry.registerBlock(38, {
 		return treeGen[0](x,y,z,"sapling_oak",log_oakID,leaves_oakID,leaves_oak_appleID)
 	},
 });
-
+var grassHalfID = noa.registry.registerBlock(34, {material: ['grass_block_top','dirt','grass_block_side']});
 
 
 const playBlockSound=blockID=>{
@@ -543,6 +544,7 @@ const playBlockSound=blockID=>{
 // simple height map worldgen function
 function getVoxelID(x, y, z,height,data) {
 	let amount = Math.round(height);
+	let dx=x&15,dy=y&15,dz=z&15;
 	if (y < -864) return 0;
 	if (y === -864) return bedrockID;
 	if(shouldBeCaveAir(x,y,z)&&y<amount)return 0;
@@ -560,11 +562,11 @@ function getVoxelID(x, y, z,height,data) {
 	if (y < amount-5) return stoneID
 	if (y < amount-1) return dirtID
 	
-	if (y < amount) return grassID
+	if (y < amount) return grassFullID
 	if (y >= amount && y < -2 && noa.getBlock(x,y-1,z)!==0) return waterID;
 	let treeX=Math.abs(generateHash(`${Math.floor(x/16)},${Math.floor(y/16)},${Math.floor(z/16)}|sapling_oak,x`)) & 7;
 	let treeZ=Math.abs(generateHash(`${Math.floor(x/16)},${Math.floor(y/16)},${Math.floor(z/16)}|sapling_oak,z`)) & 7;
-	if(y<amount+1&&Math.floor(x/16)+treeX===x&&Math.floor(z/16)+treeZ===z&&noa.getBlock(x,y-1,z)!==0)return sapling_oak_auto_genID;
+	if(y<amount+1&&Math.floor(x/16)+treeX===x&&Math.floor(z/16)+treeZ===z&&data.get(dx,dy-1,dz)!==0)return sapling_oak_auto_genID;
 	
 	return 0 // signifying empty space
 }
