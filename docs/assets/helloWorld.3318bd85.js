@@ -448,7 +448,16 @@ const BLOCK_TO_ID={
 			return
 		},
 	}),
-	"sapling_oak_auto_gen":38
+	"sapling_oak_auto_gen":38,
+	"stone_brick":noa.registry.registerBlock(39, {material: 'stone_brick'}),
+	"stone_tiles":noa.registry.registerBlock(40, {material: 'stone_tiles'}),
+	"mini_stone_bricks":noa.registry.registerBlock(41, {material: 'mini_stone_bricks'}),
+	"depthstone_brick":noa.registry.registerBlock(42, {material: 'depthstone_brick'}),
+	"depthstone_tiles":noa.registry.registerBlock(43, {material: 'depthstone_tiles'}),
+	"mini_depthstone_bricks":noa.registry.registerBlock(44, {material: 'mini_depthstone_bricks'}),
+	"underworld_brick":noa.registry.registerBlock(45, {material: 'underworld_brick'}),
+	"underworld_tiles":noa.registry.registerBlock(46, {material: 'underworld_tiles'}),
+	"mini_underworld_bricks":noa.registry.registerBlock(47, {material: 'mini_underworld_bricks'}),
 };
 
 const BlockMD={
