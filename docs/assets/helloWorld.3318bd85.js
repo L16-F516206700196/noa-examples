@@ -571,6 +571,7 @@ function getVoxelID(x, y, z,height) {
 
 // register for world events
 noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
+	console.log(data);
 	// `id` - a unique string id for the chunk
 	// `data` - an `ndarray` of voxel ID data (see: https://github.com/scijs/ndarray)
 	// `x, y, z` - world coords of the corner of the chunk
