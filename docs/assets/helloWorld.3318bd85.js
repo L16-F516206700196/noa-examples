@@ -695,7 +695,7 @@ noa.on('tick', function (dt) {
 			if(qBRequiresUnder.length<1)return;
 			let qBRequiresUnder0=qBRequiresUnder[0];
 			console.log(qBRequiresUnder,qBRequiresUnder0);
-			if(noa.getBlock(qBRequiresUnder0[1],qBRequiresUnder0[2],qBRequiresUnder0[3]))noa.setBlock(...qBRequiresUnder0);
+			if(noa.getBlock(qBRequiresUnder0[1],qBRequiresUnder0[2],qBRequiresUnder0[3])!==0)noa.setBlock(...qBRequiresUnder0);
 			qBRequiresUnder.splice(0,1);
 		}
 	}
