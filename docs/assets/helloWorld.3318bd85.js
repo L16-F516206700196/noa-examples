@@ -571,7 +571,7 @@ function getVoxelID(x, y, z,height,data) {
 	if (y < amount-1) return dirtID
 	
 	if (y < amount) return grassFullID
-	if (y >= amount && y < -2 && noa.getBlock(x,y-1,z)!==0)return water_genID;
+	if (y >= amount && y < -2)return water_genID;
 	let treeX=Math.round(randomS(generateHash(`${Math.floor(x/16)},${Math.floor(y/16)},${Math.floor(z/16)}|sapling_oak,x`))*8);
 	let treeZ=Math.round(randomS(generateHash(`${Math.floor(x/16)},${Math.floor(y/16)},${Math.floor(z/16)}|sapling_oak,z`))*8);
 	if(y<amount+1&&Math.floor(x/16)+treeX===x&&Math.floor(z/16)+treeZ===z&&data.get(dx,dy-1,dz)!==0)return sapling_oak_auto_genID;
