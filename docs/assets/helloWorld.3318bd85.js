@@ -81,8 +81,8 @@ const generateHash=str=>{
 
 const randomS=s=>{
 	s^=(s<<13);
-	s^=(s>>>7);
-	s^=(s<<17); 
+	s^=(s>>>17);
+	s^=(s<<5); 
 	return ((s>>>0)/4294967295)
 }
 
@@ -694,7 +694,7 @@ noa.on('tick', function (dt) {
 		for(let i=0;i<16;i++){
 			if(qBRequiresUnder.length<1)return;
 			let qBRequiresUnder0=qBRequiresUnder[0];
-			console.log(qBRequiresUnder,qBRequiresUnder0);
+			console.log(qBRequiresUnder,qBRequiresUnder0,noa.getBlock(qBRequiresUnder0[1],qBRequiresUnder0[2],qBRequiresUnder0[3]));
 			if(noa.getBlock(qBRequiresUnder0[1],qBRequiresUnder0[2],qBRequiresUnder0[3])!==0)noa.setBlock(...qBRequiresUnder0);
 			qBRequiresUnder.splice(0,1);
 		}
