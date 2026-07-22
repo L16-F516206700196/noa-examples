@@ -247,10 +247,10 @@ const genFunc=(x,y,z,oreS,genName)=>{
 	let oreN=ID_TO_BLOCK[oreS];
 	let genInfo=gens[genName],genAmt=genInfo[3];
 	for(let I=0;I<genAmt;I++){
-		let sr1=(Math.abs((generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}xu`))&1)-0.5)*2,
-			sr2=(Math.abs((generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}zu`))&1)-0.5)*2;
-		let r1=sr1*(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}x`))%Math.ceil(Math.sqrt(genInfo[4])),
-			r2=sr2*(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}z`))%Math.ceil(Math.sqrt(genInfo[4]));
+		let sr1=(Math.round(randomS(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}xu`)))-0.5)*2,
+			sr2=(Math.round(randomS(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}zu`)))-0.5)*2;
+		let r1=Math.round(sr1*(randomS(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}x`)))*Math.ceil(Math.sqrt(genInfo[4]))),
+			r2=sr2*(randomS(generateHash(`${x},${y},${z}|${seedNum}|${oreN}|${I}z`)))*Math.ceil(Math.sqrt(genInfo[4]));
 		if(isStone.includes(noa.getBlock(x+r1,y,z+r2)))queuedBlock.push([oreS,x+r1,y,z+r2]);
 	}
 	queuedBlock.push([oreS,x,y,z]);	
@@ -459,6 +459,7 @@ const BLOCK_TO_ID={
 	"underworld_brick":noa.registry.registerBlock(45, {material: 'underworld_brick'}),
 	"underworld_tiles":noa.registry.registerBlock(46, {material: 'underworld_tiles'}),
 	"mini_underworld_bricks":noa.registry.registerBlock(47, {material: 'mini_underworld_bricks'}),
+	"grass_block_half":48,
 };
 
 const BlockMD={
@@ -516,7 +517,7 @@ var sapling_oak_auto_genID = noa.registry.registerBlock(38, {
 		return treeGen[0](x,y,z,"sapling_oak",log_oakID,leaves_oakID,leaves_oak_appleID)
 	},
 });
-var grassHalfID = noa.registry.registerBlock(34, {material: ['grass_block_top','dirt','grass_block_side']});
+var grassHalfID = noa.registry.registerBlock(48, {material: ['grass_block_top','dirt','grass_block_side']});
 
 
 const playBlockSound=blockID=>{
@@ -564,8 +565,8 @@ function getVoxelID(x, y, z,height,data) {
 	
 	if (y < amount) return grassFullID
 	if (y >= amount && y < -2 && noa.getBlock(x,y-1,z)!==0) return waterID;
-	let treeX=Math.abs(generateHash(`${Math.floor(x/16)},${Math.floor(y/16)},${Math.floor(z/16)}|sapling_oak,x`)) & 7;
-	let treeZ=Math.abs(generateHash(`${Math.floor(x/16)},${Math.floor(y/16)},${Math.floor(z/16)}|sapling_oak,z`)) & 7;
+	let treeX=Math.round(randomS(generateHash(`${Math.floor(x/16)},${Math.floor(y/16)},${Math.floor(z/16)}|sapling_oak,x`))*8);
+	let treeZ=Math.round(randomS(generateHash(`${Math.floor(x/16)},${Math.floor(y/16)},${Math.floor(z/16)}|sapling_oak,z`))*8);
 	if(y<amount+1&&Math.floor(x/16)+treeX===x&&Math.floor(z/16)+treeZ===z&&data.get(dx,dy-1,dz)!==0)return sapling_oak_auto_genID;
 	
 	return 0 // signifying empty space
