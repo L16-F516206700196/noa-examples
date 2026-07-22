@@ -194,7 +194,12 @@ const playAudio = src => {
 	var audio = new Audio(src);
 	audio.play();
 }
+let queuedBlock=[
 
+]
+let qBRequiresUnder=[
+
+]
 // block materials
 
 let isOre=[
@@ -239,9 +244,7 @@ const sounds={
 }
 
 // [blockID,x,y,z]
-let queuedBlock=[
 
-]
 
 const genFunc=(x,y,z,oreS,genName)=>{
 	let oreN=ID_TO_BLOCK[oreS];
@@ -564,7 +567,7 @@ function getVoxelID(x, y, z,height,data) {
 	if (y < amount-1) return dirtID
 	
 	if (y < amount) return grassFullID
-	if (y >= amount && y < -2 && noa.getBlock(x,y-1,z)!==0) return waterID;
+	if (y >= amount && y < -2 && noa.getBlock(x,y-1,z)!==0){qBRequiresUnder.push([waterID,x,y,z])};
 	let treeX=Math.round(randomS(generateHash(`${Math.floor(x/16)},${Math.floor(y/16)},${Math.floor(z/16)}|sapling_oak,x`))*8);
 	let treeZ=Math.round(randomS(generateHash(`${Math.floor(x/16)},${Math.floor(y/16)},${Math.floor(z/16)}|sapling_oak,z`))*8);
 	if(y<amount+1&&Math.floor(x/16)+treeX===x&&Math.floor(z/16)+treeZ===z&&data.get(dx,dy-1,dz)!==0)return sapling_oak_auto_genID;
@@ -687,6 +690,15 @@ noa.on('tick', function (dt) {
 			console.log(queuedBlock,queuedBlock0);
 			noa.setBlock(...queuedBlock0);
 			queuedBlock.splice(0,1);
+		}
+	}
+	if(qBRequiresUnder.length>0){
+		for(let i=0;i<16;i++){
+			if(qBRequiresUnder.length<1)return;
+			let qBRequiresUnder0=qBRequiresUnder[0];
+			console.log(qBRequiresUnder,qBRequiresUnder0);
+			if(noa.getBlock(qBRequiresUnder0[1],qBRequiresUnder0[2],qBRequiresUnder0[3]))noa.setBlock(...qBRequiresUnder0);
+			qBRequiresUnder0.splice(0,1);
 		}
 	}
 	var scroll = noa.inputs.state.scrolly
