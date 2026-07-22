@@ -520,8 +520,12 @@ var sapling_oak_auto_genID = noa.registry.registerBlock(38, {
 		return treeGen[0](x,y,z,"sapling_oak",log_oakID,leaves_oakID,leaves_oak_appleID)
 	},
 });
-var grassHalfID = noa.registry.registerBlock(48, {material: ['grass_block_top','dirt','grass_block_side']});
-
+var grass_halfID = noa.registry.registerBlock(48, {material: ['grass_block_top','dirt','grass_block_side']});
+var water_genID=noa.registry.registerBlock(49,{
+	material:"water_gen",
+	onSet: (x,y,z)=>noa.getBlock(x,y-1,z)?noa.setBlock(waterID,x,y,z):noa.setBlock(0,x,y,z),
+	onLoad: (x,y,z)=>noa.getBlock(x,y-1,z)?noa.setBlock(waterID,x,y,z):noa.setBlock(0,x,y,z),
+})
 
 const playBlockSound=blockID=>{
 	if(sounds.gravel.includes(blockID)){playAudio(`../hello-world/sounds/gravel${Math.ceil(Math.random()*6)}.mp3`)}
@@ -567,7 +571,7 @@ function getVoxelID(x, y, z,height,data) {
 	if (y < amount-1) return dirtID
 	
 	if (y < amount) return grassFullID
-	if (y >= amount && y < -2 && noa.getBlock(x,y-1,z)!==0){qBRequiresUnder.push([waterID,x,y,z])};
+	if (y >= amount && y < -2 && noa.getBlock(x,y-1,z)!==0)return water_genID;
 	let treeX=Math.round(randomS(generateHash(`${Math.floor(x/16)},${Math.floor(y/16)},${Math.floor(z/16)}|sapling_oak,x`))*8);
 	let treeZ=Math.round(randomS(generateHash(`${Math.floor(x/16)},${Math.floor(y/16)},${Math.floor(z/16)}|sapling_oak,z`))*8);
 	if(y<amount+1&&Math.floor(x/16)+treeX===x&&Math.floor(z/16)+treeZ===z&&data.get(dx,dy-1,dz)!==0)return sapling_oak_auto_genID;
