@@ -682,7 +682,7 @@ noa.inputs.down.on("toggle-check-place",()=>{
 // each tick, consume any scroll events and use them to zoom camera
 noa.on('tick', function (dt) {
 	let vel=fm.velocity,speed=Math.sqrt(vel[0]**2 + vel[2]**2);
-	let displayCoords=noa.entities.getPosition(g).map(i=>`/ ${Math.round(i*1e4)/1e4} `).splice(0,2);
+	let displayCoords=noa.entities.getPosition(g).map(i=>`/ ${Math.round(i*1e4)/1e4} `).join("").splice(0,2);
 	let displayVel=``;
 	fm.velocity.forEach(i => displayVel+=`/ ${Math.round(i*1e4)/1e4} `);
 	displayVel.splice(0,2);
