@@ -613,10 +613,10 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
 	noa.world.setChunkData(id, data)
 });
 
-var g=e.playerEntity,m=e.entities.getPositionData(g),d=m.width,f=m.height,z=e.rendering.getScene(),a=D("player-mesh",{},z);var move = e.entities.getMovement(g);
+var g=e.playerEntity,m=e.entities.getPositionData(g),fm=noa.entities.getPhysicsBody(g),d=m.width,f=m.height,z=e.rendering.getScene(),a=D("player-mesh",{},z);var move = e.entities.getMovement(g);
 move.maxSpeed = 7.2;move.running=!0;move.jumpImpulse=(84/11);move.moveForce = 60;move.jumpTime=0;move.airJumps=0;
-noa.entities.getPhysicsBody(g).airDrag=0.1;
-noa.entities.getPhysicsBody(g).friction=60;
+fm.airDrag=0.1;
+fm.friction=60;
 a.scaling.x=d;a.scaling.z=d;a.scaling.y=f;
 a.material=e.rendering.makeStandardMaterial();e.entities.addComponent(g,e.entities.names.mesh,{mesh:a,offset:[0,f/2,0]});
 
@@ -660,7 +660,7 @@ noa.inputs.bind('alt-fire', 'KeyE')
 
 noa.inputs.bind('log-coords', 'KeyC')
 noa.inputs.down.on('log-coords', function () {
-	console.log(noa.entities.getPosition(g),noa.entities.getPhysicsBody(g).velocity)
+	console.log(noa.entities.getPosition(g),fm.velocity)
 })
 
 noa.inputs.bind("previous-block","KeyU");
@@ -681,6 +681,9 @@ noa.inputs.down.on("toggle-check-place",()=>{
 })
 // each tick, consume any scroll events and use them to zoom camera
 noa.on('tick', function (dt) {
+	let vel=fm.velocity,speed=Math.sqrt(vel[0]**2 + vel[2]**2);
+	document.getElementById("debug-info").innerHTML=`Coordinates: X/Y/Z ${noa.entities.getPosition(g).map(i=>`<br>${Math.round(i*1e4)/1e4)}`}<br>Vel: X/Y/Z ${fm.velocity.map(i=>`<br>${Math.round(i*1e4)/1e4)}`}<br>Speed: ${speed} b/s`;
+	
 	if(queuedBlock.length>0){
 		for(let i=0;i<16;i++){
 			if(queuedBlock.length<1)return;
