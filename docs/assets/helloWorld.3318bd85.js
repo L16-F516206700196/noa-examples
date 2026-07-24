@@ -660,7 +660,7 @@ noa.inputs.bind('alt-fire', 'KeyE')
 
 noa.inputs.bind('log-coords', 'KeyC')
 noa.inputs.down.on('log-coords', function () {
-	console.log(noa.entities.getPosition(g))
+	console.log(noa.entities.getPosition(g),noa.entities.getPhysicsBody(g).velocity)
 })
 
 noa.inputs.bind("previous-block","KeyU");
