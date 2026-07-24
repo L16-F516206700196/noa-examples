@@ -685,7 +685,7 @@ noa.on('tick', function (dt) {
 	let displayCoords=noa.entities.getPosition(g).map(i=>`/ ${Math.round(i*1e4)/1e4} `).join("").slice(1);
 	let displayVel=``;
 	fm.velocity.forEach(i => displayVel+=`/ ${Math.round(i*1e4)/1e4} `);
-	displayVel.slice(1);
+	displayVel=displayVel.slice(1);
 	/*Coordinates: X/Y/Z ${displayCoords}
 	<br>Vel: X/Y/Z ${displayVel}<br>Speed: ${speed} b/s
 	*/
