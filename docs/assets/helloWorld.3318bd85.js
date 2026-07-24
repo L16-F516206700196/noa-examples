@@ -682,15 +682,16 @@ noa.inputs.down.on("toggle-check-place",()=>{
 // each tick, consume any scroll events and use them to zoom camera
 noa.on('tick', function (dt) {
 	let vel=fm.velocity,speed=Math.sqrt(vel[0]**2 + vel[2]**2);
-	let displayCoords=noa.entities.getPosition(g).map(i=>`${Math.round(i*1e4)/1e4} /`);
+	let displayCoords=noa.entities.getPosition(g).map(i=>`/ ${Math.round(i*1e4)/1e4} `).splice(0,2);
 	let displayVel=``;
-	fm.velocity.forEach(i => displayVel+=`${Math.round(i*1e4)/1e4} /`)
+	fm.velocity.forEach(i => displayVel+=`/ ${Math.round(i*1e4)/1e4} `);
+	displayVel.splice(0,2);
 	/*Coordinates: X/Y/Z ${displayCoords}
 	<br>Vel: X/Y/Z ${displayVel}<br>Speed: ${speed} b/s
 	*/
 	document.getElementById("debug-seed").innerHTML=`Seed ${seedNum}`;
-	document.getElementById("debug-coords").innerHTML=`X/Y/Z ${displayCoords}`;
-	document.getElementById("debug-vel").innerHTML=`X/Y/Z ${displayVel}`;
+	document.getElementById("debug-coords").innerHTML=`${displayCoords}`;
+	document.getElementById("debug-vel").innerHTML=`${displayVel}`;
 	document.getElementById("debug-speed").innerHTML=`${Math.round(speed*1e4)/1e4} b/s`;
 	
 	if(queuedBlock.length>0){
