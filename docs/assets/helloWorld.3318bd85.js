@@ -682,7 +682,7 @@ noa.inputs.down.on("toggle-check-place",()=>{
 // each tick, consume any scroll events and use them to zoom camera
 noa.on('tick', function (dt) {
 	let vel=fm.velocity,speed=Math.sqrt(vel[0]**2 + vel[2]**2);
-	let displayCoords=noa.entities.getPosition(g).map(i=>`/ ${Math.round(i*1e4)/1e4} `).join("").slice(1);
+	let displayCoords=noa.entities.getPosition(g).map(i=>`/ ${Math.round(i*1e2)/1e2} `).join("").slice(1);
 	let displayVel=``;
 	fm.velocity.forEach(i => displayVel+=`/ ${Math.round(i*1e4)/1e4} `);
 	displayVel=displayVel.slice(1);
@@ -692,7 +692,7 @@ noa.on('tick', function (dt) {
 	document.getElementById("debug-seed").innerHTML=`Seed ${seedNum}`;
 	document.getElementById("debug-coords").innerHTML=`${displayCoords}`;
 	document.getElementById("debug-vel").innerHTML=`${displayVel}`;
-	document.getElementById("debug-speed").innerHTML=`${Math.round(speed*1e4)/1e4} b/s`;
+	document.getElementById("debug-speed").innerHTML=`${Math.round(speed*1e2)/1e2} b/s`;
 	
 	if(queuedBlock.length>0){
 		for(let i=0;i<16;i++){
