@@ -188,7 +188,7 @@
     }
     #debug-seed{
       padding:0.25vw;
-      background-color:#6f6c;
+      background-color:#6f6a;
       border: .2vw solid #0f0;
       border-radius:.5vw;
       backdrop-filter:blur(6px);
@@ -201,7 +201,7 @@
     
     #debug-coords{
       padding:0.25vw;
-      background-color:#ff0c;
+      background-color:#ff0a;
       border: .2vw solid #fc0;
       border-radius:.5vw;
       backdrop-filter:blur(6px);
@@ -214,7 +214,7 @@
 
     #debug-vel{
       padding:0.25vw;
-      background-color:#ff0c;
+      background-color:#ff0a;
       border: .2vw solid #fc0;
       border-radius:.5vw;
       backdrop-filter:blur(6px);
@@ -227,7 +227,7 @@
     
     #debug-speed{
       padding:0.25vw;
-      background-color:#3fcc;
+      background-color:#3fca;
       border: .2vw solid #0fc;
       border-radius:.5vw;
       backdrop-filter:blur(6px);
@@ -237,6 +237,29 @@
       height: 1.5vw;
       overflow:hidden;
     }
+
+    .hotbar-container {
+      padding:0.25vw;
+      position: fixed;
+      grid-template-colums:repeat(10,1fr);
+      display:flex;
+      top: 97vw;
+      left: 25vw;
+      width: 25vw;
+      height: 1.6vw;
+      z-index: 99;
+    }
+    .hotbar-container > div{
+      padding:0.25vw,
+      background-color:#f25058aa;
+      backdrop-filter:blur(6px);
+      text-align:right;
+      vertical-align:bottom;
+      color:#eeeeee;
+      border:.2vw solid #ee2f45;
+      border-radius:.5vw;
+    }
+    
   </style>
   <script type="module" crossorigin src="../assets/helloWorld.3318bd85.js"></script>
   <link rel="modulepreload" crossorigin href="../assets/babylon.39bd9ef3.js">
@@ -252,7 +275,18 @@
     <div id="debug-vel">Velocity (x/y/z): Loading...</div>
     <div id="debug-speed">Speed: Loading...</div>
   </div>
-  
+  <div class="hotbar-container">
+    <div id="item0"></div>
+    <div id="item1"></div>
+    <div id="item2"></div>
+    <div id="item3"></div>
+    <div id="item4"></div>
+    <div id="item5"></div>
+    <div id="item6"></div>
+    <div id="item7"></div>
+    <div id="item8"></div>
+    <div id="item9"></div>
+  </div>
 </body>
 
 </html>
