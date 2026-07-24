@@ -616,7 +616,7 @@ noa.world.on('worldDataNeeded', function (id, data, x, y, z) {
 var g=e.playerEntity,m=e.entities.getPositionData(g),fm=noa.entities.getPhysicsBody(g),d=m.width,f=m.height,z=e.rendering.getScene(),a=D("player-mesh",{},z);var move = e.entities.getMovement(g);
 move.maxSpeed = 7.2;move.running=!0;move.jumpImpulse=(84/11);move.moveForce = 60;move.jumpTime=0;move.airJumps=0;
 fm.airDrag=0.1;
-fm.friction=60;
+fm.friction=15;
 a.scaling.x=d;a.scaling.z=d;a.scaling.y=f;
 a.material=e.rendering.makeStandardMaterial();e.entities.addComponent(g,e.entities.names.mesh,{mesh:a,offset:[0,f/2,0]});
 
@@ -683,7 +683,8 @@ noa.inputs.down.on("toggle-check-place",()=>{
 noa.on('tick', function (dt) {
 	let vel=fm.velocity,speed=Math.sqrt(vel[0]**2 + vel[2]**2);
 	let displayCoords=noa.entities.getPosition(g).map(i=>`<br>${Math.round(i*1e4)/1e4}`);
-	let displayVel=fm.velocity.map(i => `<br> ${Math.round(i*1e4)/1e4} `)
+	let displayVel=``;
+	fm.velocity.forEach(i => displayVel+=`<br> ${Math.round(i*1e4)/1e4} `)
 	document.getElementById("debug-info").innerHTML=`
 	Coordinates: X/Y/Z ${displayCoords}
 	<br>Vel: X/Y/Z ${displayVel}<br>Speed: ${speed} b/s`;
