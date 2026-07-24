@@ -26,14 +26,18 @@
       text-align: center;
     }
 
-    #debug-info {
+    .debug-container {
       position: fixed;
+      display:flex;
       top: 2vw;
       left: 2vw;
       width: 6vw;
       height: 12vw;
-      background-color:#fccf4799;
-      border: 2px solid #f2b130;
+      
+    }
+    #seed{
+      background-color:#6f69;
+      border: 2px solid #00ff00;
       border-radius:.5vw;
       backdrop-filter:blur(6px);
       -webkit-backdrop-filter:blur(6px);
@@ -48,8 +52,11 @@
 <body>
   <div id="reticle">+</div>
 
-  <div id="debug-info">
-    Coordinates:<br>Velocity:<br>Speed:<br>
+  <div class="debug-container">
+    <div id="seed">Seed: Loading...</div>
+    <div id="coordinates">Coords (x/y/z): Loading...</div>
+    <div id="velocity">Velocity (x/y/z): Loading...</div>
+    <div id="speed">Speed: Loading...</div>
   </div>
   
 </body>
